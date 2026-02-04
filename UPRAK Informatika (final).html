@@ -1,0 +1,4386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMISATAR-Sistem Manajemen & Informasi SMAN 1 TARAKAN</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FullCalendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<style>
+    /* VARIABLES - SMAN 1 TARAKAN Theme */
+    :root {
+        --sman-red: #8B0000;          
+        --sman-blue: #000080;         
+        --sman-black: #000000;       
+        --sman-white: #FFFFFF;        
+        --sman-light-gray: #F0F0F0;   
+        --sman-gray: #8899A6;         
+        --google-blue: #4285F4;
+        --google-green: #0F9D58;
+        --google-red: #DB4437;
+        --google-yellow: #F4B400;
+        --sman-red-light: #A52A2A;   
+        --sman-blue-light: #1E3A8A;   
+        --sman-dark: #0F172A;
+    }
+
+    /* RESET & BASE */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: var(--sman-red);
+        color: var(--sman-white);
+        height: 100vh;
+        display: flex;
+    }
+
+    /* LOGIN SCREEN */
+    .login-screen {
+        display: flex;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, var(--sman-white) 0%, var(--sman-red) 100%);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-container {
+        background: rgba(139, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 3rem;
+        width: 90%;
+        max-width: 400px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-logo i {
+        font-size: 3rem;
+        color: var(--sman-red);
+        margin-bottom: 1rem;
+    }
+
+    .login-logo h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-logo p {
+        color: var(--sman-white);
+        font-size: 0.9rem;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--sman-white);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        color: var(--sman-white);
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--sman-red);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-input::placeholder {
+        color: var(--sman-blue-light);
+    }
+
+    .login-btn {
+        background: var(--sman-red);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+        background: var(--sman-red-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+    }
+
+    .secret-admin {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--sman-blue-light);
+    }
+
+    .secret-admin a {
+        color: var(--sman-red);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .secret-admin a:hover {
+        text-decoration: underline;
+    }
+
+    /* MAIN APP LAYOUT */
+    .app-container {
+        display: none;
+        width: 100%;
+        height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 250px;
+        background: var(--google-yellow);
+        border-right: 1px solid var(--sman-light-gray);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+    }
+
+    .sidebar-logo i {
+        font-size: 1.8rem;
+        color: var(--sman-red);
+    }
+
+    .sidebar-logo span {
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 1rem;
+        border-radius: 30px;
+        color: var(--sman-white);
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+
+    .nav-item:hover {
+        background: rgba(139, 0, 0, 0.1);
+        color: var(--sman-red);
+    }
+
+    .nav-item.active {
+        background: var(--sman-red);
+        color: white;
+    }
+
+    .nav-item i {
+        font-size: 1.3rem;
+        width: 24px;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        padding: 1rem 0.5rem;
+        border-top: 1px solid var(--sman-light-gray);
+        margin-top: auto;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.8rem;
+        border-radius: 30px;
+        transition: background 0.3s;
+        cursor: pointer;
+    }
+
+    .user-profile:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--sman-red), var(--google-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .user-nisn {
+        color: var(--sman-gray);
+        font-size: 0.85rem;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+        margin-left: 250px;
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+        height: 100vh;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--sman-gray);
+        font-size: 1rem;
+    }
+
+    /* DASHBOARD GRID */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* CARDS */
+    .card {
+        background: var(--sman-dark);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid var(--sman-light-gray);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--sman-light-gray);
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ATTENDANCE CARD */
+    .attendance-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .present-stat { color: var(--google-green); }
+    .absent-stat { color: var(--google-red); }
+    .late-stat { color: var(--google-yellow); }
+
+    .google-form-link {
+        background: var(--google-green);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 1rem;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .google-form-link:hover {
+        background: #0d8043;
+        transform: translateY(-2px);
+    }
+
+    /* TODO LIST */
+    .todo-input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+    }
+
+    .todo-input {
+        flex: 1;
+        padding: 0.8rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--sman-light-gray);
+        border-radius: 10px;
+        color: var(--sman-white);
+        font-size: 1rem;
+    }
+
+    .todo-input:focus {
+        outline: none;
+        border-color: var(--sman-red);
+    }
+
+    .todo-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .todo-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid var(--sman-light-gray);
+        transition: background 0.3s;
+    }
+
+    .todo-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .todo-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 1rem;
+        cursor: pointer;
+        accent-color: var(--sman-red);
+    }
+
+    .todo-content {
+        flex: 1;
+    }
+
+    .todo-title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .todo-deadline {
+        color: var(--sman-gray);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .todo-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ANNOUNCEMENTS */
+    .announcement-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .announcement-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--sman-light-gray);
+        transition: background 0.3s;
+    }
+
+    .announcement-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .announcement-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .announcement-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--sman-white);
+    }
+
+    .announcement-date {
+        color: var(--sman-gray);
+        font-size: 0.9rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.3rem 0.8rem;
+        border-radius: 12px;
+    }
+
+    .announcement-content {
+        color: var(--sman-gray);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    .announcement-sender {
+        color: var(--sman-red);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* GOOGLE INTEGRATION BADGES */
+    .integration-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0.3rem 0.8rem;
+        background: rgba(66, 133, 244, 0.1);
+        color: var(--google-blue);
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1px solid rgba(66, 133, 244, 0.2);
+    }
+
+    /* CALENDAR SECTION */
+    .calendar-section {
+        margin-top: 2rem;
+    }
+
+    #calendar {
+        background: var(--sman-dark);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid var(--sman-light-gray);
+    }
+
+    /* MODALS */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: var(--sman-dark);
+        border-radius: 15px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 1px solid var(--sman-light-gray);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--sman-light-gray);
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: var(--sman-gray);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .close-btn:hover {
+        color: var(--sman-white);
+    }
+
+    /* FORM STYLES */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--sman-white);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--sman-light-gray);
+        border-radius: 10px;
+        color: var(--sman-white);
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--sman-red);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* BUTTONS */
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: var(--sman-red);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--sman-red-light);
+        transform: translateY(-2px);
+    }
+
+    .btn-google {
+        background: var(--google-blue);
+        color: white;
+    }
+
+    .btn-success {
+        background: var(--google-green);
+        color: white;
+    }
+
+    .btn-danger {
+        background: var(--google-red);
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* ADMIN MODAL */
+    .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .admin-stat {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .admin-stat .number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    /* SWITCH TOGGLE */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: .3s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: var(--sman-white);
+        transition: .3s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: var(--sman-red);
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    /* SCHEDULE TABLE STYLES */
+    .schedule-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .schedule-container th,
+    .schedule-container td {
+        border: 1px solid var(--sman-light-gray);
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .schedule-container th {
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        font-weight: 600;
+    }
+
+    .schedule-container td {
+        padding: 0.5rem;
+        height: 80px;
+    }
+
+    /* SUBJECT LIST */
+    .subject-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .subject-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--sman-light-gray);
+        transition: background 0.3s;
+    }
+
+    .subject-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+        .sidebar {
+            width: 80px;
+            padding: 1rem 0.5rem;
+        }
+        
+        .sidebar-logo span,
+        .nav-item span,
+        .user-info {
+            display: none;
+        }
+        
+        .sidebar-logo {
+            justify-content: center;
+        }
+        
+        .nav-item {
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .main-content {
+            margin-left: 80px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .main-content {
+            padding: 1rem;
+        }
+        
+        .schedule-container th,
+        .schedule-container td {
+            padding: 0.3rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* SCROLLBAR STYLING */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--sman-blue);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--sman-light-gray);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--sman-gray);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease;
+    }
+
+    /* UTILITY CLASSES */
+    .text-center { text-align: center; }
+    .text-muted { color: var(--sman-gray); }
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .w-100 { width: 100%; }
+</style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container fade-in">
+<div class="login-logo">
+    <img src="Logosmasa.png" alt="Logo SMAN 1 Tarakan" style="width: 80px; height: 100px; margin-bottom: 1rem;">
+    <h1>Sistem Manajemen dan Informasi Siswa SMA Negeri 1 Tarakan</h1>
+    <p>Login dengan NISN Anda</p>
+</div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">NISN (Nomor Induk Siswa Nasional)</label>
+                    <input type="text" id="nisnInput" class="form-input" 
+                           placeholder="Masukkan 10 digit NISN" 
+                           maxlength="10" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="passwordInput" class="form-input" 
+                           placeholder="Masukkan password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Masuk ke Sistem
+                </button>
+            </form>
+            
+            <div class="secret-admin">
+                <p>Admin? 
+                    <a onclick="showAdminModal()">Klik disini untuk login admin</a>
+                </p>
+            </div>
+            
+            <div class="mt-3 text-center text-muted">
+                <small>Sistem terintegrasi dengan Google Apps</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app-container" id="appContainer">
+        <!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <img src="Logosmasa.png" alt="Logo SMAN 1 Tarakan" style="width: 40px; height: 55px;">
+        <span>SMAN 1 TARAKAN</span>
+    </div>
+            
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" onclick="showPage('dashboard')">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#attendance" class="nav-item" onclick="showPage('attendance')">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Absensi</span>
+                </a>
+                <a href="#schedule" class="nav-item" onclick="showPage('schedule')">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Jadwal</span>
+                </a>
+                <a href="#todo" class="nav-item" onclick="showPage('todo')">
+                    <i class="fas fa-tasks"></i>
+                    <span>To-Do List</span>
+                </a>
+                <a href="#announcements" class="nav-item" onclick="showPage('announcements')">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Pengumuman</span>
+                </a>
+                <a href="#calendar" class="nav-item" onclick="showPage('calendar')">
+                    <i class="fas fa-calendar"></i>
+                    <span>Kalender</span>
+                </a>
+                <a href="#settings" class="nav-item" onclick="showPage('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile" onclick="showUserProfile()">
+                    <div class="user-avatar" id="userAvatar">AB</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Andi Budiman</div>
+                        <div class="user-nisn" id="userNISN">NISN: 9988776655</div>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- DASHBOARD PAGE -->
+            <section id="dashboard" class="page-content active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Selamat datang di Sistem Manajemen dan Informasi Siswa SMA Negeri 1 Tarakan</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- ATTENDANCE SUMMARY -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-clipboard-check"></i>
+                                Ringkasan Absensi
+                            </h3>
+                            <span class="integration-badge">
+                                <i class="fab fa-google"></i> Google Forms
+                            </span>
+                        </div>
+                        
+                        <div class="attendance-stats">
+                            <div class="stat-box">
+                                <div class="stat-number present-stat" id="presentCount">85%</div>
+                                <div class="text-muted">Kehadiran</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number absent-stat" id="absentCount">3</div>
+                                <div class="text-muted">Absen</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-number late-stat" id="lateCount">2</div>
+                                <div class="text-muted">Terlambat</div>
+                            </div>
+                        </div>
+                        
+                        <a href="https://forms.gle/JGKbg16AhA3wQojb6" target="_blank" class="google-form-link">
+                            <i class="fab fa-google"></i> Isi Absensi Hari Ini
+                        </a>
+                    </div>
+
+                    <!-- TODO LIST -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-tasks"></i>
+                                Tugas Mendesak
+                            </h3>
+                            <span class="integration-badge">
+                                <i class="fab fa-google"></i> Calendar
+                            </span>
+                        </div>
+                        
+                        <div class="todo-list" id="urgentTodos">
+                            <!-- Urgent todos will be loaded here -->
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 mt-2" onclick="showPage('todo')">
+                            <i class="fas fa-plus"></i> Tambah Tugas Baru
+                        </button>
+                    </div>
+
+                    <!-- LATEST ANNOUNCEMENTS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-bullhorn"></i>
+                                Pengumuman Terbaru
+                            </h3>
+                            <span class="integration-badge">
+                                <i class="fab fa-google"></i> Sites
+                            </span>
+                        </div>
+                        
+                        <div class="announcement-list" id="latestAnnouncements">
+                            <!-- Latest announcements will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- GOOGLE INTEGRATION STATUS -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fab fa-google"></i>
+                            Status Integrasi Google
+                        </h3>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <i class="fab fa-google" style="color: var(--google-blue);"></i>
+                            <div>
+                                <div style="font-weight: 600;">Google Forms</div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Absensi</div>
+                            </div>
+                            <span class="badge-success" style="margin-left: auto; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(15, 157, 88, 0.2); color: var(--google-green);">Active</span>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <i class="fas fa-table" style="color: var(--google-green);"></i>
+                            <div>
+                                <div style="font-weight: 600;">Google Sheets</div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Database</div>
+                            </div>
+                            <span class="badge-success" style="margin-left: auto; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(15, 157, 88, 0.2); color: var(--google-green);">Active</span>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <i class="fas fa-calendar" style="color: var(--google-red);"></i>
+                            <div>
+                                <div style="font-weight: 600;">Google Calendar</div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Jadwal</div>
+                            </div>
+                            <span class="badge-success" style="margin-left: auto; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(15, 157, 88, 0.2); color: var(--google-green);">Active</span>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <i class="fas fa-globe" style="color: var(--google-blue);"></i>
+                            <div>
+                                <div style="font-weight: 600;">Google Sites</div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Pengumuman</div>
+                            </div>
+                            <span class="badge-success" style="margin-left: auto; padding: 0.2rem 0.6rem; border-radius: 10px; background: rgba(15, 157, 88, 0.2); color: var(--google-green);">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ATTENDANCE PAGE -->
+            <section id="attendance" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Absensi Digital</h1>
+                    <p class="page-subtitle">Terintegrasi dengan Google Forms & Sheets</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-check"></i>
+                                Absen Hari Ini
+                            </h3>
+                        </div>
+                        
+                        <div class="text-center mb-3">
+                            <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;" id="currentDate"></div>
+                            <div class="text-muted" id="currentDay"></div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1.5rem 0;">
+                            <button class="btn btn-success" onclick="submitAttendance('Hadir')">
+                                <i class="fas fa-check"></i> Hadir
+                            </button>
+                            <button class="btn btn-danger" onclick="submitAttendance('Absen')">
+                                <i class="fas fa-times"></i> Absen
+                            </button>
+                            <button class="btn btn-warning" onclick="submitAttendance('Terlambat')">
+                                <i class="fas fa-clock"></i> Terlambat
+                            </button>
+                        </div>
+                        
+                        <a href="https://forms.gle/JGKbg16AhA3wQojb6" target="_blank" class="google-form-link mt-2">
+                            <i class="fab fa-google"></i> Buka Form Absensi Google
+                        </a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-history"></i>
+                                Riwayat Absensi
+                            </h3>
+                        </div>
+                        
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--sman-light-gray);">
+                                        <th style="padding: 0.8rem; text-align: left;">Tanggal</th>
+                                        <th style="padding: 0.8rem; text-align: left;">Status</th>
+                                        <th style="padding: 0.8rem; text-align: left;">Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceHistory">
+                                    <!-- Attendance history will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <button class="btn btn-google w-100 mt-2" onclick="viewGoogleSheet()">
+                            <i class="fas fa-external-link-alt"></i> Lihat di Google Sheets
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCHEDULE PAGE -->
+            <section id="schedule" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Jadwal Pelajaran</h1>
+                    <p class="page-subtitle">Jadwal mingguan terintegrasi dengan Google Calendar</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- WEEKLY SCHEDULE -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-calendar-week"></i>
+                                Jadwal Minggu Ini
+                            </h3>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-sm btn-primary" onclick="prevWeek()">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span id="currentWeekRange" style="font-weight: 500;"></span>
+                                <button class="btn btn-sm btn-primary" onclick="nextWeek()">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="schedule-container" id="scheduleTable">
+                            <!-- Schedule will be loaded here -->
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-google w-100" onclick="syncScheduleToCalendar()">
+                                <i class="fab fa-google"></i> Sync ke Google Calendar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- SUBJECT INFORMATION -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-book"></i>
+                                Info Mata Pelajaran
+                            </h3>
+                        </div>
+                        
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <div class="subject-list" id="subjectInfo">
+                                <!-- Subject info will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="https://classroom.google.com" target="_blank" class="btn btn-google w-100">
+                                <i class="fab fa-google"></i> Buka Google Classroom
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- EXAM SCHEDULE -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Jadwal Ujian & Tes
+                        </h3>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--sman-light-gray);">
+                                    <th style="padding: 1rem; text-align: left;">Tanggal</th>
+                                    <th style="padding: 1rem; text-align: left;">Mata Pelajaran</th>
+                                    <th style="padding: 1rem; text-align: left;">Jenis</th>
+                                    <th style="padding: 1rem; text-align: left;">Waktu</th>
+                                    <th style="padding: 1rem; text-align: left;">Ruangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examSchedule">
+                                <!-- Exam schedule will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TODO LIST PAGE -->
+            <section id="todo" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">To-Do List</h1>
+                    <p class="page-subtitle">Tersinkron dengan Google Calendar</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Tambah Tugas Baru
+                            </h3>
+                        </div>
+                        
+                        <div class="todo-input-container">
+                            <input type="text" id="newTodoInput" class="todo-input" placeholder="Apa yang perlu dikerjakan?">
+                            <button class="btn btn-primary" onclick="addNewTodo()">
+                                <i class="fas fa-plus"></i> Tambah
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Deadline</label>
+                            <input type="date" id="todoDeadline" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Keterangan</label>
+                            <textarea id="todoDescription" class="form-control" rows="3" placeholder="Deskripsi tugas..."></textarea>
+                        </div>
+                        
+                        <button class="btn btn-google w-100" onclick="addToGoogleCalendar()">
+                            <i class="fab fa-google"></i> Tambah ke Google Calendar
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-tasks"></i>
+                                Daftar Tugas
+                            </h3>
+                            <span id="todoStats">0/0 selesai</span>
+                        </div>
+                        
+                        <div class="todo-list" id="todoList">
+                            <!-- Todo list will be loaded here -->
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 mt-2" onclick="syncAllToCalendar()">
+                            <i class="fas fa-sync-alt"></i> Sync Semua ke Calendar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ANNOUNCEMENTS PAGE -->
+            <section id="announcements" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Pengumuman Sekolah</h1>
+                    <p class="page-subtitle">Dari Google Sites Sekolah</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-newspaper"></i>
+                            Semua Pengumuman
+                        </h3>
+                        <button class="btn btn-sm btn-google" onclick="refreshAnnouncements()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    
+                    <div class="announcement-list" id="allAnnouncements">
+                        <!-- All announcements will be loaded here -->
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="https://sman1tarakan.sch.id/" target="_blank" class="btn btn-google">
+                            <i class="fas fa-external-link-alt"></i> Kunjungi website Sekolah
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CALENDAR PAGE -->
+            <section id="calendar" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Kalender Akademik</h1>
+                    <p class="page-subtitle">Tersinkron dengan Google Calendar</p>
+                </div>
+                
+                <div class="calendar-section">
+                    <div id="calendarContainer"></div>
+                </div>
+            </section>
+
+            <!-- SETTINGS PAGE -->
+            <section id="settings" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Pengaturan Sistem</h1>
+                    <p class="page-subtitle">Pengaturan akun dan preferensi</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- ACCOUNT SETTINGS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-cog"></i>
+                                Pengaturan Akun
+                            </h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" id="fullName" class="form-control" value="Andi Budiman">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="userEmail" class="form-control" value="andi.budiman@sekolah.sch.id">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Kelas</label>
+                            <select id="userClass" class="form-control">
+                                <option value="XII IPA 1" selected>XII IPA 1</option>
+                                <option value="XII IPA 2">XII IPA 2</option>
+                                <option value="XII IPA 3">XII IPA 3</option>
+                                <option value="XII IPS 1">XII IPS 1</option>
+                                <option value="XII IPS 2">XII IPS 2</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100" onclick="updateProfile()">
+                            <i class="fas fa-save"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                    
+                    <!-- NOTIFICATION SETTINGS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-bell"></i>
+                                Pengaturan Notifikasi
+                            </h3>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500;">Notifikasi Tugas</div>
+                                    <div class="text-muted" style="font-size: 0.9rem;">Notifikasi deadline tugas</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="notifTasks" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500;">Notifikasi Pengumuman</div>
+                                    <div class="text-muted" style="font-size: 0.9rem;">Pengumuman baru dari sekolah</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="notifAnnouncements" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500;">Email Reminder</div>
+                                    <div class="text-muted" style="font-size: 0.9rem;">Kirim reminder ke email</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="emailReminders">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500;">Integrasi Google</div>
+                                    <div class="text-muted" style="font-size: 0.9rem;">Sync otomatis ke Google Apps</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="googleSync" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 mt-3" onclick="saveNotificationSettings()">
+                            <i class="fas fa-save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- GOOGLE INTEGRATION SETTINGS -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fab fa-google"></i>
+                            Pengaturan Integrasi Google
+                        </h3>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fab fa-google" style="color: var(--google-blue);"></i>
+                                    Google Calendar
+                                </div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Sinkronisasi jadwal dan tugas</div>
+                            </div>
+                            <button class="btn btn-sm btn-google" onclick="connectGoogleCalendar()">
+                                <i class="fas fa-link"></i> Sambungkan
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-table" style="color: var(--google-green);"></i>
+                                    Google Sheets
+                                </div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Data absensi dan nilai</div>
+                            </div>
+                            <button class="btn btn-sm btn-success" onclick="connectGoogleSheets()">
+                                <i class="fas fa-link"></i> Sambungkan
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-envelope" style="color: var(--google-red);"></i>
+                                    Gmail
+                                </div>
+                                <div class="text-muted" style="font-size: 0.9rem;">Notifikasi dan komunikasi</div>
+                            </div>
+                            <button class="btn btn-sm btn-danger" onclick="connectGmail()">
+                                <i class="fas fa-link"></i> Sambungkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DATA MANAGEMENT -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-database"></i>
+                            Manajemen Data
+                        </h3>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button class="btn" onclick="exportData()" style="background: rgba(15, 157, 88, 0.1); color: var(--google-green);">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button class="btn" onclick="importData()" style="background: rgba(66, 133, 244, 0.1); color: var(--google-blue);">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                        <button class="btn" onclick="clearCache()" style="background: rgba(244, 180, 0, 0.1); color: var(--google-yellow);">
+                            <i class="fas fa-broom"></i> Clear Cache
+                        </button>
+                        <button class="btn btn-danger" onclick="resetSettings()">
+                            <i class="fas fa-redo"></i> Reset Settings
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- SYSTEM INFO -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informasi Sistem
+                        </h3>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div class="text-muted" style="font-size: 0.9rem;">Versi Aplikasi</div>
+                            <div style="font-weight: 500;">v2.0.1</div>
+                        </div>
+                        <div style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div class="text-muted" style="font-size: 0.9rem;">Pembaruan Terakhir</div>
+                            <div style="font-weight: 500;">25 Jan 2026</div>
+                        </div>
+                        <div style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div class="text-muted" style="font-size: 0.9rem;">Penyimpanan Digunakan</div>
+                            <div style="font-weight: 500;">124 MB / 1 GB</div>
+                        </div>
+                        <div style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div class="text-muted" style="font-size: 0.9rem;">Status Server</div>
+                            <div style="font-weight: 500; color: var(--google-green);">
+                                <i class="fas fa-circle" style="font-size: 0.7rem;"></i> Online
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <!-- RD PAGE -->
+<section id="admin-dashboard" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title" style="color: var(--sman-white);">
+            <i class="fas fa-user-shield"></i> Dashboard Admin
+        </h1>
+        <p class="page-subtitle">Panel kontrol administrator SMAN 1 Tarakan</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- CARD 1: TOTAL SISWA -->
+        <div class="card" style="border-left: 4px solid var(--sman-red);">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-user-graduate"></i>
+                    Total Siswa
+                </h3>
+                <span class="integration-badge">
+                    <i class="fas fa-database"></i> Database
+                </span>
+            </div>
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 3rem; font-weight: 700; color: var(--sman-red);">
+                    <span id="adminStudentCount">5</span>
+                </div>
+                <div class="text-muted">Siswa Terdaftar</div>
+            </div>
+            <button class="btn btn-primary w-100 mt-2" onclick="showPage('manage-students')">
+                <i class="fas fa-user-edit"></i> Kelola Siswa
+            </button>
+        </div>
+        
+        <!-- CARD 2: STATISTIK ABSENSI -->
+        <div class="card" style="border-left: 4px solid var(--google-green);">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    Statistik Absensi
+                </h3>
+                <span class="integration-badge">
+                    <i class="fab fa-google"></i> Sheets
+                </span>
+            </div>
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 3rem; font-weight: 700; color: var(--google-green);">
+                    <span id="adminAttendanceRate">92%</span>
+                </div>
+                <div class="text-muted">Rata-rata Kehadiran</div>
+            </div>
+            <button class="btn btn-success w-100 mt-2" onclick="showPage('manage-attendance')">
+                <i class="fas fa-chart-pie"></i> Lihat Detail
+            </button>
+        </div>
+        
+        <!-- CARD 3: SISTEM INFO -->
+        <div class="card" style="border-left: 4px solid var(--google-blue);">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-server"></i>
+                    Status Sistem
+                </h3>
+                <span class="integration-badge">
+                    <i class="fas fa-check-circle"></i> Online
+                </span>
+            </div>
+            <div style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span><i class="fab fa-google" style="color: var(--google-blue);"></i> Google Forms</span>
+                    <span style="color: var(--google-green); font-weight: 600;">Active</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span><i class="fas fa-table" style="color: var(--google-green);"></i> Google Sheets</span>
+                    <span style="color: var(--google-green); font-weight: 600;">Active</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span><i class="fas fa-calendar" style="color: var(--google-red);"></i> Google Calendar</span>
+                    <span style="color: var(--google-green); font-weight: 600;">Active</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span><i class="fas fa-server" style="color: var(--sman-red);"></i> Server Status</span>
+                    <span style="color: var(--google-green); font-weight: 600;">Online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- QUICK ACTIONS -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-bolt"></i>
+                Quick Actions
+            </h3>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <button class="btn btn-primary" onclick="addNewStudent()">
+                <i class="fas fa-user-plus"></i> Tambah Siswa
+            </button>
+            <button class="btn btn-success" onclick="exportAllData()">
+                <i class="fas fa-file-export"></i> Export All Data
+            </button>
+            <button class="btn btn-google" onclick="createAnnouncement()">
+                <i class="fas fa-bullhorn"></i> Buat Pengumuman
+            </button>
+            <button class="btn" style="background: var(--sman-red); color: white;" onclick="generateReport()">
+                <i class="fas fa-print"></i> Generate Report
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- KELOLA SISWA PAGE (SIMPLE VERSION) -->
+<section id="manage-students" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">Kelola Data Siswa</h1>
+        <p class="page-subtitle">Tambah, edit, atau hapus data siswa</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-user-graduate"></i>
+                Daftar Siswa Terdaftar
+            </h3>
+            <button class="btn btn-primary" onclick="addNewStudent()">
+                <i class="fas fa-plus"></i> Tambah Siswa Baru
+            </button>
+        </div>
+        
+        <div style="overflow-x: auto; margin-top: 1rem;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: rgba(139, 0, 0, 0.1);">
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--sman-red);">NISN</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--sman-red);">Nama Lengkap</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--sman-red);">Kelas</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--sman-red);">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="adminStudentList">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- TAMBAH PAGE LAIN UNTUK ADMIN (SIMPLE PLACEHOLDER) -->
+<!-- KELOLA ABSENSI - REAL CONTENT -->
+<section id="manage-attendance" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-clipboard-check"></i> Kelola Data Absensi
+        </h1>
+        <p class="page-subtitle">Lihat, filter, dan kelola data absensi seluruh siswa</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- FILTER SECTION -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-filter"></i> Filter Data
+                </h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Pilih Tanggal</label>
+                <input type="date" id="filterDate" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Pilih Kelas</label>
+                <select id="filterClass" class="form-control">
+                    <option value="all">Semua Kelas</option>
+                    <option value="XII IPA 1">XII IPA 1</option>
+                    <option value="XII IPA 2">XII IPA 2</option>
+                    <option value="XII IPA 3">XII IPA 3</option>
+                    <option value="XII IPS 1">XII IPS 1</option>
+                    <option value="XII IPS 2">XII IPS 2</option>
+                </select>
+            </div>
+            <button class="btn btn-primary w-100" onclick="filterAttendance()">
+                <i class="fas fa-search"></i> Filter Data
+            </button>
+        </div>
+        
+        <!-- STATS SECTION -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-pie"></i> Statistik
+                </h3>
+            </div>
+            <div class="attendance-stats">
+                <div class="stat-box">
+                    <div class="stat-number present-stat" id="adminPresentCount">0</div>
+                    <div class="text-muted">Hadir</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number absent-stat" id="adminAbsentCount">0</div>
+                    <div class="text-muted">Absen</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number late-stat" id="adminLateCount">0</div>
+                    <div class="text-muted">Terlambat</div>
+                </div>
+            </div>
+            <button class="btn btn-success w-100 mt-2" onclick="exportAttendanceCSV()">
+                <i class="fas fa-download"></i> Export ke CSV
+            </button>
+        </div>
+    </div>
+    
+    <!-- ATTENDANCE TABLE -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-table"></i> Data Absensi
+            </h3>
+            <button class="btn btn-primary" onclick="addManualAttendance()">
+                <i class="fas fa-plus"></i> Tambah Manual
+            </button>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: rgba(139, 0, 0, 0.1);">
+                        <th style="padding: 1rem; text-align: left;">No</th>
+                        <th style="padding: 1rem; text-align: left;">Nama Siswa</th>
+                        <th style="padding: 1rem; text-align: left;">Kelas</th>
+                        <th style="padding: 1rem; text-align: left;">Tanggal</th>
+                        <th style="padding: 1rem; text-align: left;">Status</th>
+                        <th style="padding: 1rem; text-align: left;">Waktu</th>
+                        <th style="padding: 1rem; text-align: left;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="adminAttendanceTable">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-3">
+            <button class="btn btn-google" onclick="syncAttendanceToSheets()">
+                <i class="fab fa-google"></i> Sync ke Google Sheets
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- KELOLA JADWAL - REAL CONTENT -->
+<section id="manage-schedule" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-calendar-alt"></i> Kelola Jadwal Pelajaran
+        </h1>
+        <p class="page-subtitle">Atur jadwal pelajaran per kelas</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- ADD SCHEDULE FORM -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-plus-circle"></i> Tambah Jadwal
+                </h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Pilih Kelas</label>
+                <select id="scheduleClass" class="form-control">
+                    <option value="XII IPA 1">XII IPA 1</option>
+                    <option value="XII IPA 2">XII IPA 2</option>
+                    <option value="XII IPA 3">XII IPA 3</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Hari</label>
+                <select id="scheduleDay" class="form-control">
+                    <option value="1">Senin</option>
+                    <option value="2">Selasa</option>
+                    <option value="3">Rabu</option>
+                    <option value="4">Kamis</option>
+                    <option value="5">Jumat</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Waktu</label>
+                <input type="text" id="scheduleTime" class="form-control" placeholder="Contoh: 07:00-08:30">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Mata Pelajaran</label>
+                <input type="text" id="scheduleSubject" class="form-control" placeholder="Nama mata pelajaran">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Guru</label>
+                <input type="text" id="scheduleTeacher" class="form-control" placeholder="Nama guru">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Ruangan</label>
+                <input type="text" id="scheduleRoom" class="form-control" placeholder="Nomor ruangan">
+            </div>
+            
+            <button class="btn btn-primary w-100" onclick="addNewSchedule()">
+                <i class="fas fa-save"></i> Simpan Jadwal
+            </button>
+        </div>
+        
+        <!-- SCHEDULE LIST -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-list"></i> Daftar Jadwal
+                </h3>
+                <button class="btn btn-sm btn-success" onclick="loadAllSchedules()">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+            </div>
+            
+            <div style="max-height: 400px; overflow-y: auto;">
+                <div id="adminScheduleList">
+                    <!-- Jadwal akan dimuat di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- BULK ACTIONS -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-cogs"></i> Aksi Massal
+            </h3>
+        </div>
+        <div style="display: flex; gap: 1rem; padding: 1rem;">
+            <button class="btn btn-google" onclick="exportSchedule()">
+                <i class="fas fa-file-export"></i> Export Jadwal
+            </button>
+            <button class="btn btn-success" onclick="importSchedule()">
+                <i class="fas fa-file-import"></i> Import Jadwal
+            </button>
+            <button class="btn btn-primary" onclick="syncScheduleToCalendar()">
+                <i class="fab fa-google"></i> Sync ke Calendar
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- KELOLA PENGUMUMAN - REAL CONTENT -->
+<section id="manage-announcements" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-bullhorn"></i> Kelola Pengumuman Sekolah
+        </h1>
+        <p class="page-subtitle">Buat dan kelola pengumuman untuk siswa</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- CREATE ANNOUNCEMENT -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i> Buat Pengumuman Baru
+                </h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Judul Pengumuman</label>
+                <input type="text" id="announcementTitle" class="form-control" placeholder="Judul pengumuman">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Isi Pengumuman</label>
+                <textarea id="announcementContent" class="form-control" rows="4" placeholder="Tulis isi pengumuman di sini..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Prioritas</label>
+                <select id="announcementPriority" class="form-control">
+                    <option value="normal">Normal</option>
+                    <option value="high">Tinggi (Penting)</option>
+                    <option value="urgent">Sangat Penting</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Penanggung Jawab</label>
+                <input type="text" id="announcementSender" class="form-control" value="Administrator" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Target Kelas</label>
+                <select id="announcementTarget" class="form-control" multiple style="height: 100px;">
+                    <option value="all" selected>Semua Kelas</option>
+                    <option value="XII IPA 1">XII IPA 1</option>
+                    <option value="XII IPA 2">XII IPA 2</option>
+                    <option value="XII IPA 3">XII IPA 3</option>
+                    <option value="XII IPS 1">XII IPS 1</option>
+                    <option value="XII IPS 2">XII IPS 2</option>
+                </select>
+                <small class="text-muted">Tekan Ctrl untuk pilih banyak</small>
+            </div>
+            
+            <button class="btn btn-primary w-100" onclick="createNewAnnouncement()">
+                <i class="fas fa-paper-plane"></i> Publikasikan
+            </button>
+        </div>
+        
+        <!-- ANNOUNCEMENT LIST -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-newspaper"></i> Daftar Pengumuman
+                </h3>
+                <span class="badge" style="background: var(--sman-red); color: white;">
+                    Total: <span id="announcementCount">0</span>
+                </span>
+            </div>
+            
+            <div style="max-height: 500px; overflow-y: auto;">
+                <div id="adminAnnouncementList">
+                    <!-- Daftar pengumuman -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- LAPORAN SISTEM - REAL CONTENT -->
+<section id="reports" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-chart-bar"></i> Laporan Sistem
+        </h1>
+        <p class="page-subtitle">Generate berbagai laporan data sekolah</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- REPORT TYPES -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-file-alt"></i> Jenis Laporan
+                </h3>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem;">
+                <div class="report-option" onclick="generateReport('attendance')" style="
+                    padding: 1rem;
+                    background: rgba(15, 157, 88, 0.1);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                ">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-clipboard-check" style="color: var(--google-green);"></i>
+                        <div>
+                            <div style="font-weight: 600;">Laporan Absensi</div>
+                            <div class="text-muted" style="font-size: 0.9rem;">Per periode & kelas</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-option" onclick="generateReport('students')" style="
+                    padding: 1rem;
+                    background: rgba(66, 133, 244, 0.1);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                ">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-users" style="color: var(--google-blue);"></i>
+                        <div>
+                            <div style="font-weight: 600;">Laporan Data Siswa</div>
+                            <div class="text-muted" style="font-size: 0.9rem;">Per kelas & status</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-option" onclick="generateReport('academic')" style="
+                    padding: 1rem;
+                    background: rgba(244, 180, 0, 0.1);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                ">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-graduation-cap" style="color: var(--google-yellow);"></i>
+                        <div>
+                            <div style="font-weight: 600;">Laporan Akademik</div>
+                            <div class="text-muted" style="font-size: 0.9rem;">Nilai & prestasi</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-option" onclick="generateReport('financial')" style="
+                    padding: 1rem;
+                    background: rgba(219, 68, 55, 0.1);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                ">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-money-bill-wave" style="color: var(--google-red);"></i>
+                        <div>
+                            <div style="font-weight: 600;">Laporan Keuangan</div>
+                            <div class="text-muted" style="font-size: 0.9rem;">SPP & pembayaran</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- REPORT SETTINGS -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-cog"></i> Pengaturan Laporan
+                </h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Periode Laporan</label>
+                <div style="display: flex; gap: 1rem;">
+                    <input type="date" id="reportStartDate" class="form-control" value="<?php echo date('Y-m-01'); ?>">
+                    <input type="date" id="reportEndDate" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Format Export</label>
+                <select id="reportFormat" class="form-control">
+                    <option value="pdf">PDF Document</option>
+                    <option value="excel">Excel File</option>
+                    <option value="csv">CSV File</option>
+                    <option value="print">Print Directly</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Kelas</label>
+                <select id="reportClass" class="form-control">
+                    <option value="all">Semua Kelas</option>
+                    <option value="XII IPA 1">XII IPA 1</option>
+                    <option value="XII IPA 2">XII IPA 2</option>
+                    <option value="XII IPA 3">XII IPA 3</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary w-100" onclick="generateSelectedReport()">
+                <i class="fas fa-play-circle"></i> Generate Laporan
+            </button>
+        </div>
+    </div>
+    
+    <!-- PREVIEW AREA -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-eye"></i> Preview Laporan
+            </h3>
+        </div>
+        <div id="reportPreview" style="padding: 2rem; text-align: center; color: var(--sman-gray);">
+            <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p>Pilih jenis laporan dan klik "Generate" untuk melihat preview</p>
+        </div>
+    </div>
+</section>
+
+<!-- PENGATURAN SISTEM - REAL CONTENT -->
+<section id="admin-settings" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-cogs"></i> Pengaturan Sistem
+        </h1>
+        <p class="page-subtitle">Konfigurasi sistem dan preferensi admin</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- SYSTEM CONFIG -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-sliders-h"></i> Konfigurasi Umum
+                </h3>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Nama Sekolah</label>
+                <input type="text" id="schoolName" class="form-control" value="SMA Negeri 1 Tarakan">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Tahun Ajaran</label>
+                <input type="text" id="schoolYear" class="form-control" value="2023/2024">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Semester</label>
+                <select id="schoolSemester" class="form-control">
+                    <option value="1">Ganjil</option>
+                    <option value="2" selected>Genap</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Jam Masuk</label>
+                <input type="time" id="schoolStartTime" class="form-control" value="07:00">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Batas Keterlambatan</label>
+                <input type="number" id="lateThreshold" class="form-control" value="15" min="1" max="60">
+                <small class="text-muted">Menit</small>
+            </div>
+            
+            <button class="btn btn-primary w-100" onclick="saveSystemSettings()">
+                <i class="fas fa-save"></i> Simpan Pengaturan
+            </button>
+        </div>
+        
+        <!-- GOOGLE INTEGRATION -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fab fa-google"></i> Integrasi Google
+                </h3>
+            </div>
+            
+            <div style="padding: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <div>
+                        <div style="font-weight: 600;">Google Forms</div>
+                        <div class="text-muted" style="font-size: 0.9rem;">ID Form: <span id="formsId">Not Set</span></div>
+                    </div>
+                    <button class="btn btn-sm btn-google" onclick="configureForms()">
+                        <i class="fas fa-edit"></i> Configure
+                    </button>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <div>
+                        <div style="font-weight: 600;">Google Sheets</div>
+                        <div class="text-muted" style="font-size: 0.9rem;">Spreadsheet ID: <span id="sheetsId">Not Set</span></div>
+                    </div>
+                    <button class="btn btn-sm btn-success" onclick="configureSheets()">
+                        <i class="fas fa-edit"></i> Configure
+                    </button>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                    <div>
+                        <div style="font-weight: 600;">Google Calendar</div>
+                        <div class="text-muted" style="font-size: 0.9rem;">Calendar ID: <span id="calendarId">Not Set</span></div>
+                    </div>
+                    <button class="btn btn-sm" style="background: var(--google-red); color: white;" onclick="configureCalendar()">
+                        <i class="fas fa-edit"></i> Configure
+                    </button>
+                </div>
+                
+                <button class="btn btn-google w-100 mt-2" onclick="testGoogleIntegration()">
+                    <i class="fas fa-vial"></i> Test Connection
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- BACKUP & RESTORE -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-database"></i> Backup & Restore
+            </h3>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem;">
+            <button class="btn btn-success" onclick="backupDatabase()">
+                <i class="fas fa-download"></i> Backup Database
+            </button>
+            <button class="btn btn-primary" onclick="restoreDatabase()">
+                <i class="fas fa-upload"></i> Restore Database
+            </button>
+            <button class="btn" style="background: var(--google-yellow); color: black;" onclick="clearAllData()">
+                <i class="fas fa-broom"></i> Clear All Data
+            </button>
+            <button class="btn btn-danger" onclick="resetSystem()">
+                <i class="fas fa-redo"></i> Reset System
+            </button>
+        </div>
+        
+        <div class="text-center mt-2">
+            <small class="text-muted">Last Backup: <span id="lastBackup">Never</span></small>
+        </div>
+    </div>
+    
+    <!-- USER MANAGEMENT -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-user-lock"></i> Manajemen User Admin
+            </h3>
+        </div>
+        
+        <div style="padding: 1rem;">
+            <div id="adminUsersList">
+                <!-- Daftar admin users -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <div>
+                        <div style="font-weight: 600;">Administrator</div>
+                        <div class="text-muted" style="font-size: 0.9rem;">Super Admin</div>
+                    </div>
+                    <span class="badge" style="background: var(--sman-red); color: white;">Owner</span>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary w-100 mt-2" onclick="addAdminUser()">
+                <i class="fas fa-user-plus"></i> Tambah Admin
+            </button>
+        </div>
+    </div>
+</section>
+        </main>
+    </div>
+
+    <!-- MODAL: ADMIN LOGIN -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login Admin</h3>
+                <button class="close-btn" onclick="closeModal('adminModal')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Kode Admin Rahasia</label>
+                <input type="password" id="adminCode" class="form-control" 
+                       placeholder="Masukkan kode admin" 
+                       onkeypress="if(event.key === 'Enter') loginAdmin()">
+            </div>
+            
+            <button class="btn btn-primary w-100" onclick="loginAdmin()">
+                <i class="fas fa-lock"></i> Masuk sebagai Admin
+            </button>
+            
+            <div class="admin-grid mt-3">
+                <div class="admin-stat">
+                    <div class="number" id="totalStudents">0</div>
+                    <div class="text-muted">Siswa</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="number" id="totalAttendance">0</div>
+                    <div class="text-muted">Absensi</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="number" id="totalTodos">0</div>
+                    <div class="text-muted">Tugas</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="number" id="totalAnnouncements">0</div>
+                    <div class="text-muted">Pengumuman</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: USER PROFILE -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Profil Siswa</h3>
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            
+            <div class="text-center mb-3">
+                <div class="user-avatar" style="width: 80px; height: 80px; margin: 0 auto 1rem; font-size: 1.5rem;" id="profileAvatar">AB</div>
+                <h3 id="profileName">Andi Budiman</h3>
+                <div class="text-muted" id="profileNISN">NISN: 9988776655</div>
+                <div class="text-muted" id="profileClass">Kelas: XII IPA 1</div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.5rem;">Statistik</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                    <div style="text-align: center; padding: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <div style="font-weight: 600;" id="profileAttendance">85%</div>
+                        <div class="text-muted" style="font-size: 0.8rem;">Kehadiran</div>
+                    </div>
+                    <div style="text-align: center; padding: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <div style="font-weight: 600;" id="profileCompleted">12</div>
+                        <div class="text-muted" style="font-size: 0.8rem;">Tugas Selesai</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-danger w-100" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <!-- Google API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+
+    <script>
+        // ============================
+        // DATA & STATE MANAGEMENT
+        // ============================
+        let currentUser = null;
+        let isAdmin = false;
+        let currentWeek = 0;
+        
+function setupAdminInterface() {
+    if (!isAdmin) return;
+    
+    console.log("Setting up admin interface...");
+    
+    // 1. GANTI BACKGROUND SIDEBAR (DARKER)
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.style.background = 'var(--sman-dark)';
+        sidebar.style.borderRight = '2px solid var(--sman-red)';
+    }
+    
+    // 2. GANTI LOGO SIDEBAR
+const sidebarLogo = document.querySelector('.sidebar-logo');
+if (sidebarLogo) {
+    sidebarLogo.innerHTML = `
+        
+        <img src="Logosmasa.png" alt="Logo SMAN 1 Tarakan" style="
+            width: 40px; 
+            height: 40px;
+            border-radius: 8px;
+            object-fit: contain;
+            border: 2px solid var(--sman-red);
+        ">
+        <span style="color: var(--sman-white); font-weight: 700;">ADMIN PANEL</span>
+    `;
+}
+    
+    // 3. GANTI MENU NAVIGASI
+    const navMenu = document.querySelector('.nav-menu');
+    if (navMenu) {
+        navMenu.innerHTML = `
+            <a href="#admin-dashboard" class="nav-item active" onclick="showPage('admin-dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard Admin</span>
+            </a>
+            <a href="#manage-students" class="nav-item" onclick="showPage('manage-students')">
+                <i class="fas fa-users"></i>
+                <span>Kelola Siswa</span>
+            </a>
+            <a href="#manage-attendance" class="nav-item" onclick="showPage('manage-attendance')">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Kelola Absensi</span>
+            </a>
+            <a href="#manage-schedule" class="nav-item" onclick="showPage('manage-schedule')">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Kelola Jadwal</span>
+            </a>
+            <a href="#manage-announcements" class="nav-item" onclick="showPage('manage-announcements')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Kelola Pengumuman</span>
+            </a>
+            <a href="#reports" class="nav-item" onclick="showPage('reports')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Laporan</span>
+            </a>
+            <a href="#admin-settings" class="nav-item" onclick="showPage('admin-settings')">
+                <i class="fas fa-cogs"></i>
+                <span>Pengaturan Sistem</span>
+            </a>
+        `;
+    }
+    
+    // 4. GANTI USER PROFILE
+    const userAvatar = document.getElementById('userAvatar');
+    if (userAvatar) {
+        userAvatar.textContent = 'AD';
+        userAvatar.style.background = 'linear-gradient(45deg, var(--sman-red), var(--google-red))';
+    }
+    
+    const userName = document.getElementById('userName');
+    if (userName) {
+        userName.textContent = 'Administrator';
+        userName.style.color = 'var(--sman-red)';
+    }
+    
+    const userNISN = document.getElementById('userNISN');
+    if (userNISN) {
+        userNISN.textContent = 'Role: System Administrator';
+        userNISN.style.color = 'var(--sman-gray)';
+    }
+    
+    // 5. TAMBAH BADGE ADMIN
+    const sidebarFooter = document.querySelector('.sidebar-footer');
+    if (sidebarFooter) {
+        const adminBadge = document.createElement('div');
+        adminBadge.innerHTML = `
+            <div style="
+                background: rgba(139, 0, 0, 0.2);
+                border: 1px solid var(--sman-red);
+                color: var(--sman-red);
+                padding: 0.5rem;
+                border-radius: 8px;
+                text-align: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-top: 1rem;
+            ">
+                <i class="fas fa-shield-alt"></i> ADMIN MODE
+            </div>
+        `;
+        sidebarFooter.appendChild(adminBadge);
+    }
+    
+    // 6. LOAD ADMIN DASHBOARD
+    setTimeout(() => {
+        showPage('admin-dashboard');
+    }, 100);
+}
+
+function setupStudentInterface() {
+    // Reset ke tampilan siswa
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.style.background = 'var(--sman-blue)';
+        sidebar.style.borderRight = '1px solid var(--sman-light-gray)';
+    }
+    
+    // Reset logo
+const sidebarLogo = document.querySelector('.sidebar-logo');
+if (sidebarLogo) {
+    sidebarLogo.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <!-- Logo -->
+            <img src="Logosmasa.png" alt="Logo SMAN 1 Tarakan" 
+                 style="width: 40px; height: 40px; border-radius: 6px;">
+            
+            <!-- Teks -->
+            <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                <!-- Nama besar -->
+                <span style="
+                    color: var(--sman-white); 
+                    font-weight: 900; 
+                    font-size: 1.1rem;
+                ">
+                    SMISATAR
+                </span>
+                
+                <!-- Subtitle kecil -->
+                <span style="
+                    color: var(--sman-gray);
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                ">
+                    Sistem Manajemen & Informasi SMAN 1 Tarakan
+                </span>
+            </div>
+        </div>
+    `;
+}
+    
+    // Reset menu
+    const navMenu = document.querySelector('.nav-menu');
+    if (navMenu) {
+        navMenu.innerHTML = `
+            <a href="#dashboard" class="nav-item active" onclick="showPage('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#attendance" class="nav-item" onclick="showPage('attendance')">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Absensi</span>
+            </a>
+            <a href="#schedule" class="nav-item" onclick="showPage('schedule')">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Jadwal</span>
+            </a>
+            <a href="#todo" class="nav-item" onclick="showPage('todo')">
+                <i class="fas fa-tasks"></i>
+                <span>To-Do List</span>
+            </a>
+            <a href="#announcements" class="nav-item" onclick="showPage('announcements')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Pengumuman</span>
+            </a>
+            <a href="#calendar" class="nav-item" onclick="showPage('calendar')">
+                <i class="fas fa-calendar"></i>
+                <span>Kalender</span>
+            </a>
+            <a href="#settings" class="nav-item" onclick="showPage('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Pengaturan</span>
+            </a>
+        `;
+    }
+    
+    // Reset user profile
+    const userAvatar = document.getElementById('userAvatar');
+    if (userAvatar) {
+        userAvatar.style.background = 'linear-gradient(45deg, var(--sman-red), var(--google-green))';
+    }
+}
+    
+    // 1. GANTI BACKGROUND SIDEBAR (DARKER)
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.style.background = 'var(--sman-dark)';
+        sidebar.style.borderRight = '2px solid var(--sman-red)';
+    }
+
+        // Sample student data (in real app, this would be from database)
+        const studentDatabase = [
+            { nisn: "9988776655", password: "siswa123", name: "Andi Budiman", kelas: "XII IPA 1" },
+            { nisn: "1122334455", password: "siswa123", name: "Siti Rahma", kelas: "XII IPA 2" },
+            { nisn: "5566778899", password: "siswa123", name: "Budi Santoso", kelas: "XII IPA 3" },
+            { nisn: "6677889900", password: "siswa123", name: "Dewi Lestari", kelas: "XII IPA 1" },
+            { nisn: "2233445566", password: "siswa123", name: "Rudi Hartono", kelas: "XII IPA 2" }
+        ];
+
+        // Admin codes (for demo purposes)
+        const adminCodes = ["ADMIN123", "SCHOOL2024", "SUPERADMIN", "123456"];
+
+        // Schedule data
+        const scheduleData = {
+            subjects: [
+                { id: 1, name: "Matematika", teacher: "Bu Sari", color: "#DB4437", room: "Lab 1" },
+                { id: 2, name: "Fisika", teacher: "Pak Budi", color: "#0F9D58", room: "Lab 2" },
+                { id: 3, name: "Kimia", teacher: "Bu Rina", color: "#F4B400", room: "Lab 3" },
+                { id: 4, name: "Biologi", teacher: "Pak Anton", color: "#4285F4", room: "Lab 4" },
+                { id: 5, name: "Bahasa Indonesia", teacher: "Bu Maya", color: "#AB47BC", room: "Ruang 201" },
+                { id: 6, name: "Bahasa Inggris", teacher: "Bu Lisa", color: "#26A69A", room: "Ruang 202" },
+                { id: 7, name: "Sejarah", teacher: "Pak Joko", color: "#8D6E63", room: "Ruang 203" },
+                { id: 8, name: "PKn", teacher: "Bu Dewi", color: "#78909C", room: "Ruang 204" }
+            ],
+            
+            schedule: [
+                // Senin
+                { day: 1, time: "07:00-08:30", subjectId: 1 },
+                { day: 1, time: "08:30-10:00", subjectId: 2 },
+                { day: 1, time: "10:30-12:00", subjectId: 3 },
+                { day: 1, time: "13:00-14:30", subjectId: 4 },
+                
+                // Selasa
+                { day: 2, time: "07:00-08:30", subjectId: 5 },
+                { day: 2, time: "08:30-10:00", subjectId: 6 },
+                { day: 2, time: "10:30-12:00", subjectId: 1 },
+                
+                // Rabu
+                { day: 3, time: "07:00-08:30", subjectId: 2 },
+                { day: 3, time: "08:30-10:00", subjectId: 3 },
+                { day: 3, time: "10:30-12:00", subjectId: 4 },
+                
+                // Kamis
+                { day: 4, time: "07:00-08:30", subjectId: 5 },
+                { day: 4, time: "08:30-10:00", subjectId: 6 },
+                { day: 4, time: "10:30-12:00", subjectId: 7 },
+                
+                // Jumat
+                { day: 5, time: "07:00-08:30", subjectId: 8 },
+                { day: 5, time: "08:30-10:00", subjectId: 1 },
+                { day: 5, time: "10:30-12:00", subjectId: 2 }
+            ],
+            
+            exams: [
+                { id: 1, date: "2024-01-29", subject: "Matematika", type: "UTS", time: "08:00-10:00", room: "Ruang 101" },
+                { id: 2, date: "2024-01-30", subject: "Fisika", type: "UTS", time: "08:00-10:00", room: "Ruang 102" },
+                { id: 3, date: "2024-01-31", subject: "Kimia", type: "UTS", time: "08:00-10:00", room: "Ruang 103" },
+                { id: 4, date: "2024-02-01", subject: "Biologi", type: "UTS", time: "08:00-10:00", room: "Ruang 104" },
+                { id: 5, date: "2024-02-02", subject: "Bahasa Indonesia", type: "UTS", time: "08:00-10:00", room: "Ruang 105" }
+            ]
+        };
+
+        // Sample data storage
+        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [
+            { id: 1, date: "2024-01-22", status: "Hadir", time: "07:05", nisn: "9988776655" },
+            { id: 2, date: "2024-01-21", status: "Hadir", time: "07:00", nisn: "9988776655" },
+            { id: 3, date: "2024-01-20", status: "Terlambat", time: "07:35", nisn: "9988776655" },
+            { id: 4, date: "2024-01-19", status: "Hadir", time: "07:02", nisn: "9988776655" }
+        ];
+
+        let todoData = JSON.parse(localStorage.getItem('todoData')) || [
+            { id: 1, title: "Kerjakan PR Matematika", description: "Halaman 45-48", deadline: "2024-01-25", completed: false, nisn: "9988776655", calendarId: null },
+            { id: 2, title: "Presentasi Sejarah", description: "Kelompok 3 - Perang Dunia II", deadline: "2024-01-23", completed: true, nisn: "9988776655", calendarId: "event_123" },
+            { id: 3, title: "Baca Novel Bahasa Indonesia", description: "Bab 5-7", deadline: "2024-01-24", completed: false, nisn: "9988776655", calendarId: null },
+            { id: 4, title: "Latihan Soal Fisika", description: "Gerak Parabola", deadline: "2024-01-26", completed: false, nisn: "9988776655", calendarId: null }
+        ];
+
+        let announcementData = JSON.parse(localStorage.getItem('announcementData')) || [
+            { 
+                id: 1, 
+                title: "Ujian Tengah Semester", 
+                content: "Ujian tengah semester akan dilaksanakan mulai tanggal 29 Januari hingga 2 Februari 2024. Jadwal lengkap dapat dilihat di Google Sites sekolah.",
+                sender: "Kepala Sekolah",
+                date: "2024-01-20",
+                priority: "high"
+            },
+            { 
+                id: 2, 
+                title: "Pembayaran SPP Januari", 
+                content: "Harap melakukan pembayaran SPP bulan Januari paling lambat tanggal 25 Januari 2024. Pembayaran via transfer ke rekening BCA 1234567890 a.n Sekolah.",
+                sender: "Bendahara",
+                date: "2024-01-19",
+                priority: "normal"
+            },
+            { 
+                id: 3, 
+                title: "Lomba Olimpiade Sains", 
+                content: "Pendaftaran Lomba Olimpiade Sains Nasional 2024 dibuka. Siswa yang berminat dapat mendaftar melalui Google Form yang tersedia.",
+                sender: "OSIS",
+                date: "2024-01-18",
+                priority: "normal"
+            }
+        ];
+
+        // ============================
+        // INITIALIZATION
+        // ============================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                currentUser = JSON.parse(loggedInUser);
+                showApp();
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+            updateCurrentDate();
+        });
+
+        function setupEventListeners() {
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+            
+            // NISN input validation
+            document.getElementById('nisnInput').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+            
+            // Todo input enter key
+            document.getElementById('newTodoInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addNewTodo();
+            });
+        }
+
+        // ============================
+        // LOGIN SYSTEM
+        // ============================
+function handleLogin() {
+    const nisn = document.getElementById('nisnInput').value;
+    const password = document.getElementById('passwordInput').value;
+    
+    if (!nisn || !password) {
+        showNotification('Harap isi NISN dan password!', 'error');
+        return;
+    }
+    
+    if (nisn.length !== 10) {
+        showNotification('NISN harus 10 digit!', 'error');
+        return;
+    }
+    
+    // Check for admin code in password field
+    if (adminCodes.includes(password.toUpperCase())) {
+        isAdmin = true;
+        currentUser = { nisn: "ADMIN", name: "Administrator", kelas: "Admin" };
+        localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        localStorage.setItem('isAdmin', 'true'); // SIMPAN STATUS ADMIN
+        showApp();
+        setupAdminInterface(); // PANGGIL SETUP ADMIN
+        showNotification('Login sebagai Admin berhasil!', 'success');
+        return;
+    }
+    
+    // Check student database
+    const student = studentDatabase.find(s => s.nisn === nisn && s.password === password);
+    
+    if (student) {
+        isAdmin = false;
+        currentUser = student;
+        localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        localStorage.setItem('isAdmin', 'false');
+        showApp();
+        setupStudentInterface(); // PANGGIL SETUP SISWA
+        showNotification(`Selamat datang, ${student.name}!`, 'success');
+    } else {
+        showNotification('NISN atau password salah!', 'error');
+    }
+}
+
+        function showAdminModal() {
+            closeAllModals();
+            document.getElementById('adminModal').classList.add('active');
+            updateAdminStats();
+        }
+
+function loginAdmin() {
+    const adminCode = document.getElementById('adminCode').value;
+    
+    if (adminCodes.includes(adminCode.toUpperCase())) {
+        isAdmin = true;
+        currentUser = { nisn: "ADMIN", name: "Administrator", kelas: "Admin" };
+        localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        localStorage.setItem('isAdmin', 'true');
+        showApp();
+        setupAdminInterface(); // PANGGIL SETUP ADMIN
+        closeModal('adminModal');
+        showNotification('Login sebagai Admin berhasil!', 'success');
+    } else {
+        showNotification('Kode admin salah!', 'error');
+    }
+}
+
+function showApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'flex';
+    
+    // Check if user is admin from localStorage
+    const savedIsAdmin = localStorage.getItem('isAdmin');
+    if (savedIsAdmin === 'true') {
+        isAdmin = true;
+    }
+    
+    // Update user info
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userNISN').textContent = `NISN: ${currentUser.nisn}`;
+    document.getElementById('userAvatar').textContent = getInitials(currentUser.name);
+    
+    // Setup interface based on role
+    if (isAdmin) {
+        setupAdminInterface();
+    } else {
+        setupStudentInterface();
+        loadDashboard();
+        showPage('dashboard');
+    }
+}
+
+function logout() {
+    currentUser = null;
+    isAdmin = false;
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('isAdmin');
+    
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('appContainer').style.display = 'none';
+    
+    // Clear login form
+    document.getElementById('nisnInput').value = '';
+    document.getElementById('passwordInput').value = '';
+    
+    // Reset interface
+    setupStudentInterface();
+    
+    showNotification('Anda telah logout', 'info');
+}
+
+        // ============================
+        // PAGE NAVIGATION
+        // ============================
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page-content').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Show selected page
+    const pageElement = document.getElementById(pageId);
+    if (pageElement) {
+        pageElement.classList.add('active');
+    }
+    
+    // Update active nav item
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    const activeNav = document.querySelector(`[href="#${pageId}"]`);
+    if (activeNav) {
+        activeNav.classList.add('active');
+    }
+    
+    // Load page-specific content
+    switch(pageId) {
+        case 'dashboard':
+            loadDashboard();
+            break;
+        case 'attendance':
+            loadAttendancePage();
+            break;
+        case 'schedule':
+            loadSchedulePage();
+            break;
+        case 'todo':
+            loadTodoPage();
+            break;
+        case 'announcements':
+            loadAnnouncementsPage();
+            break;
+        case 'calendar':
+            loadCalendar();
+            break;
+        case 'settings':
+            loadSettingsPage();
+            break;
+        case 'admin-dashboard':
+            loadAdminDashboard();
+            break;
+        case 'manage-students':
+            loadAdminStudentList();
+            break;
+        default:
+            // Untuk halaman admin lainnya
+            if (pageId.includes('manage-') || pageId.includes('admin-')) {
+                console.log(`Loading admin page: ${pageId}`);
+            }
+    }
+}
+
+        // ============================
+        // DASHBOARD FUNCTIONS
+        // ============================
+        function loadDashboard() {
+            if (!currentUser) return;
+            
+            // Update attendance stats
+            const userAttendance = attendanceData.filter(a => a.nisn === currentUser.nisn);
+            const presentCount = userAttendance.filter(a => a.status === 'Hadir').length;
+            const absentCount = userAttendance.filter(a => a.status === 'Absen').length;
+            const lateCount = userAttendance.filter(a => a.status === 'Terlambat').length;
+            const totalAttendance = userAttendance.length;
+            
+            const attendancePercentage = totalAttendance > 0 ? 
+                Math.round((presentCount / totalAttendance) * 100) : 0;
+            
+            document.getElementById('presentCount').textContent = `${attendancePercentage}%`;
+            document.getElementById('absentCount').textContent = absentCount;
+            document.getElementById('lateCount').textContent = lateCount;
+            
+            // Load urgent todos
+            const urgentTodos = todoData
+                .filter(todo => todo.nisn === currentUser.nisn && !todo.completed)
+                .slice(0, 3);
+            
+            const urgentTodosContainer = document.getElementById('urgentTodos');
+            urgentTodosContainer.innerHTML = '';
+            
+            if (urgentTodos.length === 0) {
+                urgentTodosContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                        <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Tidak ada tugas mendesak</p>
+                    </div>
+                `;
+            } else {
+                urgentTodos.forEach(todo => {
+                    const todoElement = document.createElement('div');
+                    todoElement.className = 'todo-item';
+                    todoElement.innerHTML = `
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                               onchange="toggleTodo(${todo.id})">
+                        <div class="todo-content">
+                            <div class="todo-title">${todo.title}</div>
+                            <div class="todo-deadline">
+                                <i class="far fa-calendar"></i>
+                                ${formatDate(todo.deadline)}
+                            </div>
+                        </div>
+                    `;
+                    urgentTodosContainer.appendChild(todoElement);
+                });
+            }
+            
+            // Load latest announcements
+            const latestAnnouncements = announcementData.slice(0, 2);
+            const announcementsContainer = document.getElementById('latestAnnouncements');
+            announcementsContainer.innerHTML = '';
+            
+            latestAnnouncements.forEach(announcement => {
+                const announcementElement = document.createElement('div');
+                announcementElement.className = 'announcement-item';
+                announcementElement.innerHTML = `
+                    <div class="announcement-header">
+                        <div class="announcement-title">${announcement.title}</div>
+                        <div class="announcement-date">${formatDate(announcement.date)}</div>
+                    </div>
+                    <div class="announcement-content">${announcement.content.substring(0, 100)}...</div>
+                    <div class="announcement-sender">
+                        <i class="fas fa-user"></i> ${announcement.sender}
+                    </div>
+                `;
+                announcementsContainer.appendChild(announcementElement);
+            });
+        }
+
+        // ============================
+        // ATTENDANCE FUNCTIONS
+        // ============================
+        function loadAttendancePage() {
+            updateCurrentDate();
+            loadAttendanceHistory();
+        }
+
+        function submitAttendance(status) {
+            if (!currentUser || currentUser.nisn === "ADMIN") {
+                showNotification('Hanya siswa yang bisa mengisi absensi!', 'error');
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const time = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            
+            // Check if already attended today
+            const alreadyAttended = attendanceData.find(a => 
+                a.date === today && a.nisn === currentUser.nisn
+            );
+            
+            if (alreadyAttended) {
+                showNotification('Anda sudah mengisi absensi hari ini!', 'warning');
+                return;
+            }
+            
+            const newAttendance = {
+                id: Date.now(),
+                date: today,
+                time,
+                status,
+                nisn: currentUser.nisn
+            };
+            
+            attendanceData.push(newAttendance);
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+            
+            // In real app, this would submit to Google Forms
+            // Simulate Google Forms submission
+            simulateGoogleFormsSubmit(newAttendance);
+            
+            loadAttendanceHistory();
+            loadDashboard();
+            
+            showNotification(`Absensi "${status}" berhasil disimpan!`, 'success');
+        }
+
+        function loadAttendanceHistory() {
+            const container = document.getElementById('attendanceHistory');
+            container.innerHTML = '';
+            
+            const userAttendance = attendanceData
+                .filter(a => a.nisn === currentUser.nisn)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 10);
+            
+            if (userAttendance.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                            Belum ada riwayat absensi
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            userAttendance.forEach(record => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid var(--sman-light-gray)';
+                row.innerHTML = `
+                    <td style="padding: 0.8rem;">${formatDate(record.date)}</td>
+                    <td style="padding: 0.8rem;">
+                        <span style="
+                            display: inline-block;
+                            padding: 0.2rem 0.6rem;
+                            border-radius: 12px;
+                            font-size: 0.8rem;
+                            font-weight: 600;
+                            background: ${getStatusColor(record.status, 0.2)};
+                            color: ${getStatusColor(record.status)};
+                        ">
+                            ${record.status}
+                        </span>
+                    </td>
+                    <td style="padding: 0.8rem;">${record.time}</td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function simulateGoogleFormsSubmit(attendance) {
+            // Simulate Google Forms API call
+            console.log('Submitting to Google Forms:', attendance);
+            
+            // Show loading state
+            showNotification('Mengirim data ke Google Forms...', 'info');
+            
+            setTimeout(() => {
+                showNotification('Data berhasil dikirim ke Google Forms & Sheets!', 'success');
+            }, 1500);
+        }
+
+        function viewGoogleSheet() {
+            // In real app, this would open your Google Sheet
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/1HxTdR6Q6O4FOBn39OxU8u7W53VdWi1dmjYXQtbJPV6A/edit?usp=sharing';
+            window.open(sheetUrl, '_blank');
+            showNotification('Membuka Google Sheet data absensi...', 'info');
+        }
+
+        // ============================
+        // SCHEDULE FUNCTIONS
+        // ============================
+        function loadSchedulePage() {
+            updateWeekDisplay();
+            loadScheduleTable();
+            loadSubjectInfo();
+            loadExamSchedule();
+        }
+
+        function updateWeekDisplay() {
+            const now = new Date();
+            const startDate = new Date(now);
+            startDate.setDate(now.getDate() - now.getDay() + 1 + (currentWeek * 7));
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 4);
+            
+            const options = { day: 'numeric', month: 'short' };
+            const startStr = startDate.toLocaleDateString('id-ID', options);
+            const endStr = endDate.toLocaleDateString('id-ID', options);
+            
+            document.getElementById('currentWeekRange').textContent = `${startStr} - ${endStr} ${startDate.getFullYear()}`;
+        }
+
+        function loadScheduleTable() {
+            const container = document.getElementById('scheduleTable');
+            container.innerHTML = '';
+            
+            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+            const timeSlots = ['07:00-08:30', '08:30-10:00', '10:30-12:00', '13:00-14:30'];
+            
+            let tableHTML = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 0.8rem; background: rgba(255,255,255,0.1); text-align: center;">Waktu</th>
+            `;
+            
+            // Create headers
+            days.forEach(day => {
+                tableHTML += `<th style="padding: 0.8rem; background: rgba(255,255,255,0.1); text-align: center;">${day}</th>`;
+            });
+            
+            tableHTML += `</tr></thead><tbody>`;
+            
+            // Create time slots rows
+            timeSlots.forEach(timeSlot => {
+                tableHTML += `<tr>`;
+                tableHTML += `<td style="padding: 0.8rem; background: rgba(255,255,255,0.05); text-align: center; font-weight: 500;">${timeSlot}</td>`;
+                
+                days.forEach((day, dayIndex) => {
+                    const dayNum = dayIndex + 1;
+                    const scheduleItem = scheduleData.schedule.find(s => 
+                        s.day === dayNum && s.time === timeSlot
+                    );
+                    
+                    if (scheduleItem) {
+                        const subject = scheduleData.subjects.find(s => s.id === scheduleItem.subjectId);
+                        tableHTML += `
+                            <td style="padding: 0.8rem; text-align: center; background: ${subject.color}20; border: 1px solid ${subject.color}40;">
+                                <div style="font-weight: 600; color: ${subject.color};">${subject.name}</div>
+                                <div style="font-size: 0.8rem; color: var(--sman-gray);">${subject.teacher}</div>
+                                <div style="font-size: 0.7rem; color: var(--sman-gray);">${subject.room}</div>
+                            </td>
+                        `;
+                    } else {
+                        tableHTML += `<td style="padding: 0.8rem; background: rgba(255,255,255,0.02);"></td>`;
+                    }
+                });
+                
+                tableHTML += `</tr>`;
+            });
+            
+            tableHTML += `</tbody></table>`;
+            container.innerHTML = tableHTML;
+        }
+
+        function loadSubjectInfo() {
+            const container = document.getElementById('subjectInfo');
+            container.innerHTML = '';
+            
+            scheduleData.subjects.forEach(subject => {
+                const subjectElement = document.createElement('div');
+                subjectElement.className = 'subject-item';
+                subjectElement.style.cssText = `
+                    padding: 1rem;
+                    border-bottom: 1px solid var(--sman-light-gray);
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                `;
+                
+                subjectElement.innerHTML = `
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: ${subject.color};"></div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${subject.name}</div>
+                        <div style="font-size: 0.9rem; color: var(--sman-gray);">${subject.teacher} • ${subject.room}</div>
+                    </div>
+                    <button class="btn btn-sm" style="background: rgba(66,133,244,0.1); color: var(--google-blue);" 
+                            onclick="showSubjectDetails(${subject.id})">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                `;
+                
+                container.appendChild(subjectElement);
+            });
+        }
+
+        function loadExamSchedule() {
+            const container = document.getElementById('examSchedule');
+            container.innerHTML = '';
+            
+            if (scheduleData.exams.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                            Tidak ada jadwal ujian
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const sortedExams = [...scheduleData.exams].sort((a, b) => 
+                new Date(a.date) - new Date(b.date)
+            );
+            
+            sortedExams.forEach(exam => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid var(--sman-light-gray)';
+                
+                const examDate = new Date(exam.date);
+                const today = new Date();
+                const isUpcoming = examDate >= today;
+                
+                row.innerHTML = `
+                    <td style="padding: 1rem;">
+                        ${formatDate(exam.date)}
+                        ${isUpcoming ? '<span style="margin-left: 0.5rem; font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(15,157,88,0.2); color: var(--google-green); border-radius: 8px;">UPCOMING</span>' : ''}
+                    </td>
+                    <td style="padding: 1rem; font-weight: 500;">${exam.subject}</td>
+                    <td style="padding: 1rem;">
+                        <span style="padding: 0.3rem 0.8rem; background: rgba(219,68,55,0.1); color: var(--google-red); border-radius: 12px; font-size: 0.9rem; font-weight: 600;">
+                            ${exam.type}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">${exam.time}</td>
+                    <td style="padding: 1rem;">${exam.room}</td>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        function prevWeek() {
+            currentWeek--;
+            updateWeekDisplay();
+            loadScheduleTable();
+        }
+
+        function nextWeek() {
+            currentWeek++;
+            updateWeekDisplay();
+            loadScheduleTable();
+        }
+
+        function syncScheduleToCalendar() {
+            showNotification('Menyinkronkan jadwal ke Google Calendar...', 'info');
+            
+            // Simulate Google Calendar API sync
+            setTimeout(() => {
+                showNotification('Jadwal berhasil disinkronkan ke Google Calendar!', 'success');
+            }, 2000);
+        }
+
+        function showSubjectDetails(subjectId) {
+            const subject = scheduleData.subjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            alert(`Detail Mata Pelajaran:\n\nNama: ${subject.name}\nGuru: ${subject.teacher}\nRuangan: ${subject.room}\n\nKlik "Buka Google Classroom" untuk materi lengkap.`);
+        }
+
+        // ============================
+        // TODO LIST FUNCTIONS
+        // ============================
+        function loadTodoPage() {
+            loadTodoList();
+            
+            // Set default deadline to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('todoDeadline').value = tomorrow.toISOString().split('T')[0];
+        }
+
+        function addNewTodo() {
+            const title = document.getElementById('newTodoInput').value.trim();
+            const deadline = document.getElementById('todoDeadline').value;
+            const description = document.getElementById('todoDescription').value.trim();
+            
+            if (!title) {
+                showNotification('Harap masukkan judul tugas!', 'error');
+                return;
+            }
+            
+            if (!deadline) {
+                showNotification('Harap pilih deadline!', 'error');
+                return;
+            }
+            
+            const newTodo = {
+                id: Date.now(),
+                title,
+                description,
+                deadline,
+                completed: false,
+                nisn: currentUser.nisn,
+                calendarId: null
+            };
+            
+            todoData.push(newTodo);
+            localStorage.setItem('todoData', JSON.stringify(todoData));
+            
+            // Clear form
+            document.getElementById('newTodoInput').value = '';
+            document.getElementById('todoDescription').value = '';
+            
+            loadTodoList();
+            loadDashboard();
+            
+            showNotification('Tugas berhasil ditambahkan!', 'success');
+        }
+
+        function loadTodoList() {
+            const container = document.getElementById('todoList');
+            container.innerHTML = '';
+            
+            const userTodos = todoData
+                .filter(todo => todo.nisn === currentUser.nisn)
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            
+            if (userTodos.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                        <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Tidak ada tugas</p>
+                    </div>
+                `;
+            } else {
+                userTodos.forEach(todo => {
+                    const todoElement = document.createElement('div');
+                    todoElement.className = 'todo-item';
+                    todoElement.innerHTML = `
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                               onchange="toggleTodo(${todo.id})">
+                        <div class="todo-content">
+                            <div class="todo-title">${todo.title}</div>
+                            <div class="todo-deadline">
+                                <i class="far fa-calendar"></i>
+                                ${formatDate(todo.deadline)}
+                                ${todo.calendarId ? ' • <i class="fab fa-google" style="color: var(--google-blue);"></i>' : ''}
+                            </div>
+                            ${todo.description ? `<small class="text-muted">${todo.description}</small>` : ''}
+                        </div>
+                        <div class="todo-actions">
+                            ${todo.calendarId ? '' : 
+                                `<button class="btn btn-sm btn-google" onclick="syncTodoToCalendar(${todo.id})" title="Sync ke Google Calendar">
+                                    <i class="fab fa-google"></i>
+                                </button>`
+                            }
+                            <button class="btn btn-sm btn-danger" onclick="deleteTodo(${todo.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(todoElement);
+                });
+            }
+            
+            // Update stats
+            const completed = userTodos.filter(todo => todo.completed).length;
+            const total = userTodos.length;
+            document.getElementById('todoStats').textContent = `${completed}/${total} selesai`;
+        }
+
+        function toggleTodo(id) {
+            const todo = todoData.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                localStorage.setItem('todoData', JSON.stringify(todoData));
+                loadTodoList();
+                loadDashboard();
+            }
+        }
+
+        function syncTodoToCalendar(id) {
+            const todo = todoData.find(t => t.id === id);
+            if (!todo) return;
+            
+            showNotification('Menyinkronkan ke Google Calendar...', 'info');
+            
+            // Simulate Google Calendar API call
+            setTimeout(() => {
+                todo.calendarId = 'event_' + Date.now();
+                localStorage.setItem('todoData', JSON.stringify(todoData));
+                loadTodoList();
+                showNotification('Tugas berhasil disinkronkan ke Google Calendar!', 'success');
+            }, 1500);
+        }
+
+        function syncAllToCalendar() {
+            const unsyncedTodos = todoData.filter(todo => 
+                todo.nisn === currentUser.nisn && !todo.calendarId
+            );
+            
+            if (unsyncedTodos.length === 0) {
+                showNotification('Semua tugas sudah tersinkron!', 'info');
+                return;
+            }
+            
+            showNotification(`Menyinkronkan ${unsyncedTodos.length} tugas ke Google Calendar...`, 'info');
+            
+            unsyncedTodos.forEach(todo => {
+                todo.calendarId = 'event_' + Date.now();
+            });
+            
+            localStorage.setItem('todoData', JSON.stringify(todoData));
+            loadTodoList();
+            
+            setTimeout(() => {
+                showNotification('Semua tugas berhasil disinkronkan!', 'success');
+            }, 2000);
+        }
+
+        function addToGoogleCalendar() {
+            // In real app, this would open Google Calendar creation
+            window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
+            showNotification('Membuka Google Calendar...', 'info');
+        }
+
+        function deleteTodo(id) {
+            if (!confirm('Hapus tugas ini?')) return;
+            
+            todoData = todoData.filter(todo => todo.id !== id);
+            localStorage.setItem('todoData', JSON.stringify(todoData));
+            loadTodoList();
+            loadDashboard();
+            showNotification('Tugas berhasil dihapus!', 'success');
+        }
+
+        // ============================
+        // ANNOUNCEMENTS FUNCTIONS
+        // ============================
+        function loadAnnouncementsPage() {
+            const container = document.getElementById('allAnnouncements');
+            container.innerHTML = '';
+            
+            if (announcementData.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--sman-gray);">
+                        <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>Tidak ada pengumuman</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedAnnouncements = [...announcementData].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+            
+            sortedAnnouncements.forEach(announcement => {
+                const announcementElement = document.createElement('div');
+                announcementElement.className = 'announcement-item';
+                
+                const priorityBadge = announcement.priority === 'high' ? 
+                    '<span style="margin-left: 0.5rem; padding: 0.2rem 0.6rem; background: rgba(219, 68, 55, 0.2); color: var(--google-red); border-radius: 12px; font-size: 0.8rem; font-weight: 600;">PENTING</span>' : '';
+                
+                announcementElement.innerHTML = `
+                    <div class="announcement-header">
+                        <div class="announcement-title">${announcement.title} ${priorityBadge}</div>
+                        <div class="announcement-date">${formatDate(announcement.date)}</div>
+                    </div>
+                    <div class="announcement-content">${announcement.content}</div>
+                    <div class="announcement-sender">
+                        <i class="fas fa-user"></i> ${announcement.sender}
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-google" onclick="viewAnnouncementSource(${announcement.id})">
+                            <i class="fab fa-google"></i> Lihat di Google Sites
+                        </button>
+                    </div>
+                `;
+                container.appendChild(announcementElement);
+            });
+        }
+
+        function refreshAnnouncements() {
+            // Simulate fetching from Google Sites
+            showNotification('Memuat ulang pengumuman dari Google Sites...', 'info');
+            
+            setTimeout(() => {
+                // In real app, this would fetch from Google Sites API
+                loadAnnouncementsPage();
+                showNotification('Pengumuman berhasil diperbarui!', 'success');
+            }, 1500);
+        }
+
+        function viewAnnouncementSource(id) {
+            // In real app, this would open the Google Sites page
+            const sitesUrl = 'https://sites.google.com/sekolah/announcements';
+            window.open(sitesUrl, '_blank');
+            showNotification('Membuka Google Sites...', 'info');
+        }
+
+        // ============================
+        // CALENDAR FUNCTIONS
+        // ============================
+        function loadCalendar() {
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '<div id="calendar"></div>';
+            
+            // Convert todos to calendar events
+            const events = todoData
+                .filter(todo => todo.nisn === currentUser.nisn)
+                .map(todo => ({
+                    id: todo.id.toString(),
+                    title: todo.title,
+                    start: todo.deadline,
+                    color: todo.completed ? '#0F9D58' : '#DB4437',
+                    extendedProps: {
+                        type: 'todo',
+                        completed: todo.completed,
+                        description: todo.description
+                    }
+                }));
+            
+            // Add attendance events
+            const userAttendance = attendanceData.filter(a => a.nisn === currentUser.nisn);
+            userAttendance.forEach(attendance => {
+                events.push({
+                    id: 'attendance_' + attendance.date,
+                    title: 'Absensi: ' + attendance.status,
+                    start: attendance.date,
+                    color: getStatusColor(attendance.status)
+                });
+            });
+            
+            // Add schedule events
+            scheduleData.exams.forEach(exam => {
+                events.push({
+                    id: 'exam_' + exam.id,
+                    title: exam.type + ': ' + exam.subject,
+                    start: exam.date,
+                    color: '#F4B400',
+                    extendedProps: {
+                        type: 'exam',
+                        time: exam.time,
+                        room: exam.room
+                    }
+                });
+            });
+            
+            const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth',
+                locale: 'id',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events,
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                },
+                eventMouseEnter: function(info) {
+                    info.el.style.cursor = 'pointer';
+                }
+            });
+            
+            calendar.render();
+        }
+
+        // ============================
+        // SETTINGS FUNCTIONS
+        // ============================
+        function loadSettingsPage() {
+            // Load saved settings
+            const savedSettings = JSON.parse(localStorage.getItem('userSettings')) || {};
+            
+            if (savedSettings.fullName) {
+                document.getElementById('fullName').value = savedSettings.fullName;
+            }
+            if (savedSettings.email) {
+                document.getElementById('userEmail').value = savedSettings.email;
+            }
+            if (savedSettings.userClass) {
+                document.getElementById('userClass').value = savedSettings.userClass;
+            }
+            if (savedSettings.notifications) {
+                document.getElementById('notifTasks').checked = savedSettings.notifications.tasks;
+                document.getElementById('notifAnnouncements').checked = savedSettings.notifications.announcements;
+                document.getElementById('emailReminders').checked = savedSettings.notifications.email;
+                document.getElementById('googleSync').checked = savedSettings.notifications.googleSync;
+            }
+        }
+
+        function updateProfile() {
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('userEmail').value;
+            const userClass = document.getElementById('userClass').value;
+            
+            if (!fullName.trim()) {
+                showNotification('Nama tidak boleh kosong!', 'error');
+                return;
+            }
+            
+            // Update current user
+            if (currentUser) {
+                currentUser.name = fullName;
+                currentUser.kelas = userClass;
+                localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                document.getElementById('userName').textContent = fullName;
+                document.getElementById('userAvatar').textContent = getInitials(fullName);
+            }
+            
+            // Save settings
+            const settings = JSON.parse(localStorage.getItem('userSettings')) || {};
+            settings.fullName = fullName;
+            settings.email = email;
+            settings.userClass = userClass;
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+            
+            showNotification('Profil berhasil diperbarui!', 'success');
+        }
+
+        function saveNotificationSettings() {
+            const settings = {
+                notifications: {
+                    tasks: document.getElementById('notifTasks').checked,
+                    announcements: document.getElementById('notifAnnouncements').checked,
+                    email: document.getElementById('emailReminders').checked,
+                    googleSync: document.getElementById('googleSync').checked
+                }
+            };
+            
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+            showNotification('Pengaturan notifikasi disimpan!', 'success');
+        }
+
+        function connectGoogleCalendar() {
+            showNotification('Membuka OAuth untuk Google Calendar...', 'info');
+            setTimeout(() => {
+                showNotification('Google Calendar berhasil terhubung!', 'success');
+            }, 1500);
+        }
+
+        function connectGoogleSheets() {
+            showNotification('Membuka OAuth untuk Google Sheets...', 'info');
+            setTimeout(() => {
+                showNotification('Google Sheets berhasil terhubung!', 'success');
+            }, 1500);
+        }
+
+        function connectGmail() {
+            showNotification('Membuka OAuth untuk Gmail...', 'info');
+            setTimeout(() => {
+                showNotification('Gmail berhasil terhubung!', 'success');
+            }, 1500);
+        }
+
+        function exportData() {
+            const data = {
+                attendance: attendanceData.filter(a => a.nisn === currentUser.nisn),
+                todos: todoData.filter(t => t.nisn === currentUser.nisn),
+                settings: JSON.parse(localStorage.getItem('userSettings')) || {}
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sms-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showNotification('Data berhasil diexport!', 'success');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // Validate data structure
+                        if (data.attendance && data.todos) {
+                            // Merge attendance data
+                            const existingAttendanceIds = attendanceData.map(a => a.id);
+                            data.attendance.forEach(record => {
+                                if (!existingAttendanceIds.includes(record.id) && record.nisn === currentUser.nisn) {
+                                    attendanceData.push(record);
+                                }
+                            });
+                            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                            
+                            // Merge todo data
+                            const existingTodoIds = todoData.map(t => t.id);
+                            data.todos.forEach(todo => {
+                                if (!existingTodoIds.includes(todo.id) && todo.nisn === currentUser.nisn) {
+                                    todoData.push(todo);
+                                }
+                            });
+                            localStorage.setItem('todoData', JSON.stringify(todoData));
+                            
+                            // Load settings if available
+                            if (data.settings) {
+                                localStorage.setItem('userSettings', JSON.stringify(data.settings));
+                            }
+                            
+                            showNotification('Data berhasil diimport!', 'success');
+                            loadDashboard();
+                        } else {
+                            showNotification('Format file tidak valid!', 'error');
+                        }
+                    } catch (err) {
+                        showNotification('Error membaca file!', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function clearCache() {
+            if (confirm('Yakin ingin menghapus cache? Data yang belum disync mungkin hilang.')) {
+                localStorage.removeItem('todoData');
+                localStorage.removeItem('attendanceData');
+                localStorage.removeItem('announcementData');
+                
+                // Reset to sample data
+                todoData = [
+                    { id: 1, title: "Kerjakan PR Matematika", description: "Halaman 45-48", deadline: "2024-01-25", completed: false, nisn: currentUser.nisn, calendarId: null },
+                    { id: 2, title: "Presentasi Sejarah", description: "Kelompok 3 - Perang Dunia II", deadline: "2024-01-23", completed: true, nisn: currentUser.nisn, calendarId: "event_123" }
+                ];
+                
+                attendanceData = [
+                    { id: 1, date: "2024-01-22", status: "Hadir", time: "07:05", nisn: currentUser.nisn },
+                    { id: 2, date: "2024-01-21", status: "Hadir", time: "07:00", nisn: currentUser.nisn }
+                ];
+                
+                announcementData = [
+                    { 
+                        id: 1, 
+                        title: "Ujian Tengah Semester", 
+                        content: "Ujian tengah semester akan dilaksanakan mulai tanggal 29 Januari hingga 2 Februari 2024.",
+                        sender: "Kepala Sekolah",
+                        date: "2024-01-20",
+                        priority: "high"
+                    }
+                ];
+                
+                localStorage.setItem('todoData', JSON.stringify(todoData));
+                localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                localStorage.setItem('announcementData', JSON.stringify(announcementData));
+                
+                showNotification('Cache berhasil dibersihkan!', 'success');
+                loadDashboard();
+            }
+        }
+
+        function resetSettings() {
+            if (confirm('Yakin ingin reset semua pengaturan ke default?')) {
+                localStorage.removeItem('userSettings');
+                showNotification('Pengaturan berhasil direset!', 'success');
+                loadSettingsPage();
+            }
+        }
+
+        // ============================
+// ADMIN DATA FUNCTIONS
+// ============================
+function loadAdminDashboard() {
+    if (!isAdmin) return;
+    
+    // Update student count
+    document.getElementById('adminStudentCount').textContent = studentDatabase.length;
+    
+    // Calculate attendance rate
+    const totalRecords = attendanceData.length;
+    const presentRecords = attendanceData.filter(a => a.status === 'Hadir').length;
+    const attendanceRate = totalRecords > 0 ? Math.round((presentRecords / totalRecords) * 100) : 0;
+    document.getElementById('adminAttendanceRate').textContent = `${attendanceRate}%`;
+}
+
+function loadAdminStudentList() {
+    const container = document.getElementById('adminStudentList');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (studentDatabase.length === 0) {
+        container.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                    <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Belum ada data siswa</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    studentDatabase.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--sman-light-gray)';
+        row.innerHTML = `
+            <td style="padding: 1rem; font-weight: 500;">${student.nisn}</td>
+            <td style="padding: 1rem;">${student.name}</td>
+            <td style="padding: 1rem;">
+                <span style="
+                    display: inline-block;
+                    padding: 0.3rem 0.8rem;
+                    background: rgba(139, 0, 0, 0.1);
+                    color: var(--sman-red);
+                    border-radius: 12px;
+                    font-weight: 600;
+                ">
+                    ${student.kelas}
+                </span>
+            </td>
+            <td style="padding: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="editStudent('${student.nisn}')" style="margin-right: 0.5rem;">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.nisn}')">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </td>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function addNewStudent() {
+    const nisn = prompt("Masukkan NISN siswa (10 digit):");
+    if (!nisn || nisn.length !== 10) {
+        showNotification('NISN harus 10 digit!', 'error');
+        return;
+    }
+    
+    // Check if NISN already exists
+    if (studentDatabase.find(s => s.nisn === nisn)) {
+        showNotification('NISN sudah terdaftar!', 'error');
+        return;
+    }
+    
+    const name = prompt("Masukkan nama lengkap siswa:");
+    if (!name) {
+        showNotification('Nama tidak boleh kosong!', 'error');
+        return;
+    }
+    
+    const kelas = prompt("Masukkan kelas siswa (contoh: XII IPA 1):");
+    if (!kelas) {
+        showNotification('Kelas tidak boleh kosong!', 'error');
+        return;
+    }
+    
+    const password = prompt("Masukkan password default untuk siswa:", "siswa123");
+    
+    const newStudent = {
+        nisn: nisn,
+        password: password || "siswa123",
+        name: name,
+        kelas: kelas
+    };
+    
+    studentDatabase.push(newStudent);
+    showNotification(`Siswa ${name} berhasil ditambahkan!`, 'success');
+    
+    // Update UI
+    loadAdminDashboard();
+    loadAdminStudentList();
+}
+
+function editStudent(nisn) {
+    const student = studentDatabase.find(s => s.nisn === nisn);
+    if (!student) return;
+    
+    const newName = prompt("Edit nama siswa:", student.name);
+    if (!newName) return;
+    
+    const newKelas = prompt("Edit kelas:", student.kelas);
+    if (!newKelas) return;
+    
+    student.name = newName;
+    student.kelas = newKelas;
+    
+    showNotification(`Data siswa ${nisn} berhasil diperbarui!`, 'success');
+    loadAdminStudentList();
+}
+
+function deleteStudent(nisn) {
+    if (!confirm(`Yakin ingin menghapus siswa dengan NISN ${nisn}?`)) return;
+    
+    const index = studentDatabase.findIndex(s => s.nisn === nisn);
+    if (index !== -1) {
+        const studentName = studentDatabase[index].name;
+        studentDatabase.splice(index, 1);
+        showNotification(`Siswa ${studentName} berhasil dihapus!`, 'success');
+        loadAdminDashboard();
+        loadAdminStudentList();
+    }
+}
+
+        // ============================
+        // ADMIN FUNCTIONS
+        // ============================
+        function showAdminDashboard() {
+            if (!isAdmin) return;
+            
+            // Change UI for admin
+            document.querySelector('.sidebar-logo span').textContent = 'Admin SMS';
+            document.getElementById('userName').textContent = 'Administrator';
+            document.getElementById('userNISN').textContent = 'Role: Admin';
+            document.getElementById('userAvatar').textContent = 'AD';
+            
+            // Show admin-specific features
+            document.querySelectorAll('.nav-item span').forEach(span => {
+                if (span.textContent === 'To-Do List') span.textContent = 'Kelola Tugas';
+                if (span.textContent === 'Pengumuman') span.textContent = 'Kelola Pengumuman';
+            });
+        }
+
+        function updateAdminStats() {
+            document.getElementById('totalStudents').textContent = studentDatabase.length;
+            document.getElementById('totalAttendance').textContent = attendanceData.length;
+            document.getElementById('totalTodos').textContent = todoData.length;
+            document.getElementById('totalAnnouncements').textContent = announcementData.length;
+        }
+    
+        function filterAttendance() {
+    const date = document.getElementById('filterDate').value;
+    const kelas = document.getElementById('filterClass').value;
+    
+    let filteredData = attendanceData;
+    
+    if (date) {
+        filteredData = filteredData.filter(a => a.date === date);
+    }
+    
+    if (kelas !== 'all') {
+        // Filter by class (need to check student database)
+        filteredData = filteredData.filter(a => {
+            const student = studentDatabase.find(s => s.nisn === a.nisn);
+            return student && student.kelas === kelas;
+        });
+    }
+    
+    // Update stats
+    const present = filteredData.filter(a => a.status === 'Hadir').length;
+    const absent = filteredData.filter(a => a.status === 'Absen').length;
+    const late = filteredData.filter(a => a.status === 'Terlambat').length;
+    
+    document.getElementById('adminPresentCount').textContent = present;
+    document.getElementById('adminAbsentCount').textContent = absent;
+    document.getElementById('adminLateCount').textContent = late;
+    
+    // Update table
+    loadAttendanceTable(filteredData);
+}
+
+function loadAttendanceTable(data) {
+    const container = document.getElementById('adminAttendanceTable');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (data.length === 0) {
+        container.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: var(--sman-gray);">
+                    <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Tidak ada data absensi</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    data.forEach((record, index) => {
+        const student = studentDatabase.find(s => s.nisn === record.nisn);
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--sman-light-gray)';
+        row.innerHTML = `
+            <td style="padding: 1rem;">${index + 1}</td>
+            <td style="padding: 1rem;">${student ? student.name : 'Unknown'}</td>
+            <td style="padding: 1rem;">${student ? student.kelas : '-'}</td>
+            <td style="padding: 1rem;">${formatDate(record.date)}</td>
+            <td style="padding: 1rem;">
+                <span style="
+                    padding: 0.3rem 0.8rem;
+                    border-radius: 12px;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    background: ${getStatusColor(record.status, 0.2)};
+                    color: ${getStatusColor(record.status)};
+                ">
+                    ${record.status}
+                </span>
+            </td>
+            <td style="padding: 1rem;">${record.time}</td>
+            <td style="padding: 1rem;">
+                <button class="btn btn-sm btn-primary" onclick="editAttendance(${record.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteAttendance(${record.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        container.appendChild(row);
+    });
+}
+
+// 2. SCHEDULE MANAGEMENT
+function addNewSchedule() {
+    const kelas = document.getElementById('scheduleClass').value;
+    const day = document.getElementById('scheduleDay').value;
+    const time = document.getElementById('scheduleTime').value;
+    const subject = document.getElementById('scheduleSubject').value;
+    const teacher = document.getElementById('scheduleTeacher').value;
+    const room = document.getElementById('scheduleRoom').value;
+    
+    if (!time || !subject) {
+        showNotification('Waktu dan mata pelajaran wajib diisi!', 'error');
+        return;
+    }
+    
+    // Add to schedule data
+    const newSchedule = {
+        id: Date.now(),
+        class: kelas,
+        day: parseInt(day),
+        time: time,
+        subject: subject,
+        teacher: teacher,
+        room: room
+    };
+    
+    // In real app, save to database
+    showNotification(`Jadwal ${subject} berhasil ditambahkan!`, 'success');
+    
+    // Clear form
+    document.getElementById('scheduleTime').value = '';
+    document.getElementById('scheduleSubject').value = '';
+    document.getElementById('scheduleTeacher').value = '';
+    document.getElementById('scheduleRoom').value = '';
+}
+
+// 3. ANNOUNCEMENT MANAGEMENT
+function createNewAnnouncement() {
+    const title = document.getElementById('announcementTitle').value;
+    const content = document.getElementById('announcementContent').value;
+    const priority = document.getElementById('announcementPriority').value;
+    const sender = document.getElementById('announcementSender').value;
+    
+    if (!title || !content) {
+        showNotification('Judul dan isi pengumuman wajib diisi!', 'error');
+        return;
+    }
+    
+    const newAnnouncement = {
+        id: Date.now(),
+        title: title,
+        content: content,
+        sender: sender,
+        date: new Date().toISOString().split('T')[0],
+        priority: priority
+    };
+    
+    announcementData.unshift(newAnnouncement); // Add to beginning
+    localStorage.setItem('announcementData', JSON.stringify(announcementData));
+    
+    showNotification('Pengumuman berhasil dipublikasikan!', 'success');
+    
+    // Clear form
+    document.getElementById('announcementTitle').value = '';
+    document.getElementById('announcementContent').value = '';
+    
+    // Update count
+    document.getElementById('announcementCount').textContent = announcementData.length;
+}
+
+// 4. REPORT FUNCTIONS
+function generateSelectedReport() {
+    const type = document.querySelector('.report-option.active')?.dataset?.type || 'attendance';
+    const format = document.getElementById('reportFormat').value;
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+    const kelas = document.getElementById('reportClass').value;
+    
+    // Show loading
+    const preview = document.getElementById('reportPreview');
+    preview.innerHTML = `
+        <div style="padding: 2rem;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Generating ${type} report...</p>
+        </div>
+    `;
+    
+    // Simulate generation
+    setTimeout(() => {
+        preview.innerHTML = `
+            <div style="text-align: left; padding: 1rem;">
+                <h3 style="color: var(--sman-red); margin-bottom: 1rem;">Laporan ${type.toUpperCase()}</h3>
+                <p><strong>Periode:</strong> ${formatDate(startDate)} - ${formatDate(endDate)}</p>
+                <p><strong>Kelas:</strong> ${kelas === 'all' ? 'Semua Kelas' : kelas}</p>
+                <p><strong>Format:</strong> ${format.toUpperCase()}</p>
+                <p><strong>Generated:</strong> ${new Date().toLocaleString('id-ID')}</p>
+                
+                <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <h4>Summary</h4>
+                    <p>• Total Data: ${attendanceData.length} records</p>
+                    <p>• Total Students: ${studentDatabase.length} students</p>
+                    <p>• Average Attendance: 92%</p>
+                </div>
+                
+                <button class="btn btn-primary mt-3" onclick="downloadReport('${type}', '${format}')">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+            </div>
+        `;
+        showNotification('Laporan berhasil digenerate!', 'success');
+    }, 1500);
+}
+
+// 5. SYSTEM SETTINGS
+function saveSystemSettings() {
+    const settings = {
+        schoolName: document.getElementById('schoolName').value,
+        schoolYear: document.getElementById('schoolYear').value,
+        semester: document.getElementById('schoolSemester').value,
+        startTime: document.getElementById('schoolStartTime').value,
+        lateThreshold: document.getElementById('lateThreshold').value
+    };
+    
+    localStorage.setItem('systemSettings', JSON.stringify(settings));
+    showNotification('Pengaturan sistem berhasil disimpan!', 'success');
+}
+
+// Load settings on page load
+function loadSystemSettings() {
+    const settings = JSON.parse(localStorage.getItem('systemSettings')) || {};
+    
+    if (settings.schoolName) {
+        document.getElementById('schoolName').value = settings.schoolName;
+    }
+    if (settings.schoolYear) {
+        document.getElementById('schoolYear').value = settings.schoolYear;
+    }
+    if (settings.semester) {
+        document.getElementById('schoolSemester').value = settings.semester;
+    }
+    if (settings.startTime) {
+        document.getElementById('schoolStartTime').value = settings.startTime;
+    }
+    if (settings.lateThreshold) {
+        document.getElementById('lateThreshold').value = settings.lateThreshold;
+    }
+}
+
+// Call on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    loadSystemSettings();
+    
+    // Update announcement count
+    document.getElementById('announcementCount').textContent = announcementData.length;
+    
+    // Set default dates
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('filterDate').value = today;
+    
+    // Load initial attendance data
+    filterAttendance();
+});
+
+        // ============================
+        // USER PROFILE FUNCTIONS
+        // ============================
+        function showUserProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileNISN').textContent = `NISN: ${currentUser.nisn}`;
+            document.getElementById('profileClass').textContent = `Kelas: ${currentUser.kelas}`;
+            document.getElementById('profileAvatar').textContent = getInitials(currentUser.name);
+            
+            // Calculate stats
+            if (currentUser.nisn !== "ADMIN") {
+                const userAttendance = attendanceData.filter(a => a.nisn === currentUser.nisn);
+                const presentCount = userAttendance.filter(a => a.status === 'Hadir').length;
+                const totalAttendance = userAttendance.length;
+                const attendancePercentage = totalAttendance > 0 ? 
+                    Math.round((presentCount / totalAttendance) * 100) : 0;
+                
+                const completedTodos = todoData.filter(todo => 
+                    todo.nisn === currentUser.nisn && todo.completed
+                ).length;
+                
+                document.getElementById('profileAttendance').textContent = `${attendancePercentage}%`;
+                document.getElementById('profileCompleted').textContent = completedTodos;
+            }
+            
+            closeAllModals();
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        // ============================
+        // HELPER FUNCTIONS
+        // ============================
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
+            document.getElementById('currentDay').textContent = now.toLocaleDateString('id-ID', { weekday: 'long' });
+        }
+
+        function getStatusColor(status, opacity = 1) {
+            switch(status) {
+                case 'Hadir': return `rgba(15, 157, 88, ${opacity})`;
+                case 'Absen': return `rgba(219, 68, 55, ${opacity})`;
+                case 'Terlambat': return `rgba(244, 180, 0, ${opacity})`;
+                default: return `rgba(66, 133, 244, ${opacity})`;
+            }
+        }
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function showEventDetails(event) {
+            const eventData = event.extendedProps;
+            let message = '';
+            
+            if (eventData && eventData.type === 'todo') {
+                message = `Tugas: ${event.title}\n`;
+                message += `Status: ${eventData.completed ? 'Selesai' : 'Belum Selesai'}\n`;
+                message += `Deadline: ${event.start.toLocaleDateString('id-ID')}\n`;
+                if (eventData.description) {
+                    message += `Deskripsi: ${eventData.description}`;
+                }
+            } else if (eventData && eventData.type === 'exam') {
+                message = `Ujian: ${event.title}\n`;
+                message += `Tanggal: ${event.start.toLocaleDateString('id-ID')}\n`;
+                message += `Waktu: ${eventData.time}\n`;
+                message += `Ruangan: ${eventData.room}`;
+            } else {
+                message = `Absensi: ${event.title.split(': ')[1]}\n`;
+                message += `Tanggal: ${event.start.toLocaleDateString('id-ID')}`;
+            }
+            
+            alert(message);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            const icon = type === 'success' ? 'check-circle' :
+                        type === 'error' ? 'exclamation-circle' :
+                        type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+            
+            const color = type === 'success' ? '#0F9D58' :
+                         type === 'error' ? '#DB4437' :
+                         type === 'warning' ? '#F4B400' : '#1DA1F2';
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${icon}" style="color: ${color};"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--sman-dark);
+                color: var(--sman-white);
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+                z-index: 3000;
+                animation: slideIn 0.3s;
+                border-left: 4px solid ${color};
+                min-width: 300px;
+                max-width: 400px;
+                border: 1px solid var(--sman-light-gray);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            .fc .fc-toolbar-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--sman-white);
+            }
+            
+            .fc .fc-button {
+                background: var(--sman-red);
+                border: none;
+                font-weight: 500;
+            }
+            
+            .fc .fc-button:hover {
+                background: #1a8cd8;
+            }
+            
+            .fc .fc-button-primary:not(:disabled).fc-button-active {
+                background: var(--sman-red);
+                opacity: 0.8;
+            }
+            
+            .fc-daygrid-event {
+                border-radius: 4px;
+                padding: 2px 4px;
+                font-weight: 500;
+            }
+            
+            .fc-daygrid-day-number {
+                color: var(--sman-white);
+            }
+            
+            .fc-col-header-cell-cushion {
+                color: var(--sman-white);
+            }
+            
+            .fc-theme-standard td, .fc-theme-standard th {
+                border-color: var(--sman-light-gray);
+            }
+            
+            .page-content {
+                display: none;
+            }
+            
+            .page-content.active {
+                display: block;
+                animation: fadeIn 0.5s;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
